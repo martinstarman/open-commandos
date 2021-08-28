@@ -66,7 +66,7 @@ namespace GreenBeret
                 auto values = split(line, ',');
                 std::string name = values[0];
                 float x = std::stof(values[1]);
-                float y = std::stof(values[2]);
+                float y = std::stof(values[2]) * sin40;
                 int z = std::stoi(values[3]);
                 int h = std::stoi(values[4]);
                 int vertices_no = std::stoi(values[5]);
@@ -91,8 +91,8 @@ namespace GreenBeret
                 }
 
                 auto values = split(line, ',');
-                int x = std::stoi(values[0]);
-                int y = std::stoi(values[1]);
+                float x = std::stof(values[0]);
+                float y = std::stof(values[1]) * sin40;
 
                 // added to last polygon
                 polygons.at(polygons.size() - 1).points.emplace_back(PointF(x, y));

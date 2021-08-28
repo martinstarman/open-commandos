@@ -21,8 +21,7 @@ namespace GreenBeret
     }
 
     Map::Map()
-        : offset_x(0),
-          offset_y(0)
+        : offset(0.0f, 0.0f)
     {
     }
 
@@ -52,7 +51,7 @@ namespace GreenBeret
         {
             if (tile.sprite.at(0) != '-') // sprites starting with "minus" are invisible
             {
-                SDL_Point pos = (SDL_Point)ToWindowPoint(PointF(tile.x, tile.y));
+                SDL_Point pos = (SDL_Point)(PointF(tile.x, tile.y) - Map::Get()->offset);
                 SDL_Rect rect{pos.x, pos.y, tile.w, tile.h};
 
                 if (tile.transformation == "")
@@ -91,14 +90,10 @@ namespace GreenBeret
         // pink
         SDL_SetRenderDrawColor(Window::Get()->renderer, 255, 51, 239, 255);
 
-        // Hint for programmers:
-        // In Commandos the player looks down at the map from an angle of 40 degrees. That means that the y-coordinates have to be multiplied by sin(40) to get the correct screen coordinates.
         for (const auto &polygon : vol_file->polygons)
         {
             // draw polygon center
-            PointF pc = polygon.center;
-            pc.y = pc.y * sin40deg;
-            SDL_Point center = (SDL_Point)ToWindowPoint(pc);
+            SDL_Point center = (SDL_Point)(polygon.center - Map::Get()->offset);
             SDL_RenderDrawLine(Window::Get()->renderer, center.x - 5, center.y - 5, center.x + 5, center.y + 5);
             SDL_RenderDrawLine(Window::Get()->renderer, center.x + 5, center.y - 5, center.x - 5, center.y + 5);
 
@@ -109,15 +104,9 @@ namespace GreenBeret
                     PointF p1 = polygon.points.at(i);
                     PointF p2 = polygon.points.at((i + 1) % polygon.points.size());
 
-                    PointF p5 = p1 + polygon.center;
-                    p5.y = p5.y * sin40deg;
-
-                    PointF p6 = p2 + polygon.center;
-                    p6.y = p6.y * sin40deg;
-
-                    // TODO: calculate correct position in VOL file
-                    SDL_Point p3 = (SDL_Point)ToWindowPoint(p5);
-                    SDL_Point p4 = (SDL_Point)ToWindowPoint(p6);
+                    // TODO: move center to VOLFile.cpp?
+                    SDL_Point p3 = (SDL_Point)(p1 + polygon.center - Map::Get()->offset);
+                    SDL_Point p4 = (SDL_Point)(p2 + polygon.center - Map::Get()->offset);
 
                     SDL_RenderDrawLine(Window::Get()->renderer, p3.x, p3.y, p4.x, p4.y);
                 }
@@ -133,16 +122,13 @@ namespace GreenBeret
             {
                 for (int i = 0; i < sector.points.size(); i++)
                 {
-                    PointF p3 = sector.points.at(i);
-                    PointF p4 = sector.points.at((i + 1) % sector.points.size());
+                    PointF p1 = sector.points.at(i);
+                    PointF p2 = sector.points.at((i + 1) % sector.points.size());
 
-                    p3.y = p3.y * sin40deg;
-                    p4.y = p4.y * sin40deg;
+                    SDL_Point p3 = (SDL_Point)(p1 - Map::Get()->offset);
+                    SDL_Point p4 = (SDL_Point)(p2 - Map::Get()->offset);
 
-                    SDL_Point p1 = (SDL_Point)ToWindowPoint(p3);
-                    SDL_Point p2 = (SDL_Point)ToWindowPoint(p4);
-
-                    SDL_RenderDrawLine(Window::Get()->renderer, p1.x, p1.y, p2.x, p2.y);
+                    SDL_RenderDrawLine(Window::Get()->renderer, p3.x, p3.y, p4.x, p4.y);
                 }
             }
         }
@@ -150,25 +136,25 @@ namespace GreenBeret
 
     void Map::Move(int x, int y)
     {
-        offset_x += x;
-        offset_y += y;
+        offset.x += x;
+        offset.y += y;
 
         /*
-        if (offset_x < 0)
+        if (offset.x < 0)
         {
-            offset_x = 0;
+            offset.x = 0;
         }
-        if (offset_x > vol_file->w - Window::Get()->w)
+        if (offset.x > vol_file->w - Window::Get()->w)
         {
-            offset_x = vol_file->w - Window::Get()->w;
+            offset.x = vol_file->w - Window::Get()->w;
         }
-        if (offset_y < 0)
+        if (offset.y < 0)
         {
-            offset_y = 0;
+            offset.y = 0;
         }
-        if (offset_y > vol_file->h - Window::Get()->h)
+        if (offset.y > vol_file->h - Window::Get()->h)
         {
-            offset_y = vol_file->h - Window::Get()->h;
+            offset.y = vol_file->h - Window::Get()->h;
         }
         */
     }

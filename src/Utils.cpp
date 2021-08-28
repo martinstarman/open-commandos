@@ -20,11 +20,6 @@ namespace GreenBeret
         return value;
     }
 
-    PointF ToWindowPoint(const PointF point)
-    {
-        return PointF(point.x - Map::Get()->offset_x, (point.y - Map::Get()->offset_y));
-    }
-
     std::string &trim(std::string &s)
     {
         s = std::regex_replace(s, std::regex("\\s+"), "");

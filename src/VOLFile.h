@@ -21,5 +21,9 @@ namespace GreenBeret
 
     private:
         std::ifstream file;
+        // TODO: same variable is in SECFile.h
+        // the player looks down at the map from an angle of 40 degrees. That means that the 
+        // y-coordinates have to be multiplied by sin(40)
+        float sin40 = 0.64278760968f;
     };
 } // namespace GreenBeret

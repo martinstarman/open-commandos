@@ -86,6 +86,6 @@ namespace GreenBeret
         int x = 0;
         int y = 0;
         SDL_GetMouseState(&x, &y);
-        SDL_Log("Mouse pos: %i, %i", x + Map::Get()->offset_x, y + Map::Get()->offset_y);
+        SDL_Log("Mouse pos: %f, %f", x + Map::Get()->offset.x, y + Map::Get()->offset.y);
     }
 } // namespace GreenBeret

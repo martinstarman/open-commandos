@@ -40,7 +40,7 @@ namespace GreenBeret
                         std::getline(file, line);
                         auto values = split(line, ' ');
                         float x = std::stof(values.at(0));
-                        float y = std::stof(values.at(1));
+                        float y = std::stof(values.at(1)) * sin40;
                         points.emplace_back(PointF(x, y));
                     }
 
@@ -55,7 +55,7 @@ namespace GreenBeret
                     {
                         // skip empty line
                         std::getline(file, line); // TODO: make it more robust
-                        
+
                         // number of vertices
                         std::getline(file, line);
                         auto values = split(line, ' ');
