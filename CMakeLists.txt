@@ -20,7 +20,7 @@ add_executable(
     src/Window.cpp
     src/Game.cpp
     src/Map.cpp
-    src/PointF.cpp
+    src/Vector2.cpp
     src/Polygon.cpp
     src/Sector.cpp
     src/Tile.cpp

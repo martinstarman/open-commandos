@@ -33,39 +33,39 @@ namespace GreenBeret
 
         while (type != -1)
         {
-            int currenOffset = dirOffset + (44 * i++);
+            int currentOffset = dirOffset + (44 * i++);
 
             // name
             buffer.resize(32);
-            file.seekg(currenOffset, file.beg);
+            file.seekg(currentOffset, file.beg);
             file.read(&buffer[0], 32);
             std::string name(buffer.begin(), buffer.end());
             name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
             SDL_Log("File: %s", name.c_str());
 
-            currenOffset += 32;
+            currentOffset += 32;
 
             // type
             buffer.resize(1);
-            file.seekg(currenOffset, file.beg);
+            file.seekg(currentOffset, file.beg);
             file.read(&buffer[0], 1);
             type = (int)buffer.at(0);
             SDL_Log("File type: %i", type);
 
-            currenOffset += 4;
+            currentOffset += 4;
 
             // size
             buffer.resize(4);
-            file.seekg(currenOffset, file.beg);
+            file.seekg(currentOffset, file.beg);
             file.read(&buffer[0], 4);
             int size = GetBufferValue(buffer);
             SDL_Log("Size: %i", size);
 
-            currenOffset += 4;
+            currentOffset += 4;
 
             // offset
             buffer.resize(4);
-            file.seekg(currenOffset, file.beg);
+            file.seekg(currentOffset, file.beg);
             file.read(&buffer[0], 4);
             int offset = GetBufferValue(buffer);
             SDL_Log("Offset: %i", offset);

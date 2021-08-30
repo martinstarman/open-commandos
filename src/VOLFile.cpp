@@ -2,6 +2,7 @@
 
 #include "Tile.h"
 #include "Utils.h"
+#include "Vector2.h"
 
 #include <fstream>
 #include <SDL.h>
@@ -87,7 +88,7 @@ namespace GreenBeret
                 float y = std::stof(values[1]) * sin40;
 
                 // add to last polygon
-                polygons.back().points.emplace_back(PointF(x, y));
+                polygons.back().points.emplace_back(Vector2(x, y));
             }
             // polygon tile
             else if (line.find("TILE", 0) == 0)
@@ -96,12 +97,12 @@ namespace GreenBeret
                 line.erase(pos, 4);
 
                 auto values = split(line, ',');
-                int x = std::stoi(values[0]);
-                int y = std::stoi(values[1]);
-                int w = std::stoi(values[2]);
-                int h = std::stoi(values[3]);
-                int offsetX = std::stoi(values[4]);
-                int offsetY = std::stoi(values[5]);
+                float x = std::stof(values[0]);
+                float y = std::stof(values[1]);
+                float w = std::stof(values[2]);
+                float h = std::stof(values[3]);
+                float offsetX = std::stof(values[4]);
+                float offsetY = std::stof(values[5]);
                 int brightness = std::stoi(values[6]);
                 std::string fileName = values[7];
                 std::string transformation = values[8];

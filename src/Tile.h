@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PointF.h"
+#include "Vector2.h"
 
 #include <string>
 
@@ -9,17 +9,16 @@ namespace GreenBeret
     class Tile
     {
     public:
-        Tile(int x, int y, int w, int h, int offsetX, int offsetY, int brightness,
+        Tile(float x, float y, float w, float h, float offsetX, float offsetY, int brightness,
              const std::string &fileName, const std::string &transformation);
         ~Tile();
-        PointF position;
-        int w;
-        int h;
+        Vector2 position;
+        Vector2 size;
         std::string fileName;
         std::string transformation;
 
     private:
-        PointF offset;
+        Vector2 offset;
         int brightness;
     };
 } // namespace GreenBeret

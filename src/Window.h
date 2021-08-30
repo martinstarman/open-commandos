@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector2.h"
+
 #include <SDL.h>
 
 namespace GreenBeret
@@ -9,8 +11,7 @@ namespace GreenBeret
     public:
         static Window *Get();
         ~Window();
-        int w;
-        int h;
+        Vector2 size;
         SDL_Renderer *renderer;
 
     private:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PointF.h"
+#include "Vector2.h"
 
 #include <vector>
 
@@ -9,9 +9,9 @@ namespace GreenBeret
     class Sector
     {
     public:
-        Sector(std::vector<PointF> points);
+        Sector(std::vector<Vector2> points);
         ~Sector();
-        std::vector<PointF> points;
+        std::vector<Vector2> points;
 
     private:
     };

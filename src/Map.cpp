@@ -1,8 +1,8 @@
 #include "Map.h"
 
-#include "PointF.h"
 #include "SECFile.h"
 #include "Utils.h"
+#include "Vector2.h"
 #include "VOLFile.h"
 #include "WADFile.h"
 #include "Window.h"
@@ -72,8 +72,8 @@ namespace GreenBeret
             {
                 for (int i = 0; i < polygon.points.size(); i++)
                 {
-                    PointF p1 = polygon.points.at(i);
-                    PointF p2 = polygon.points.at((i + 1) % polygon.points.size());
+                    Vector2 p1 = polygon.points.at(i);
+                    Vector2 p2 = polygon.points.at((i + 1) % polygon.points.size());
 
                     // TODO: move center to VOLFile.cpp?
                     SDL_Point p3 = (SDL_Point)(p1 + polygon.center - Map::Get()->offset);
@@ -89,7 +89,7 @@ namespace GreenBeret
                 if (tile.fileName.at(0) != '-') // sprites starting with "minus" are invisible
                 {
                     SDL_Point pos = (SDL_Point)(tile.position - Map::Get()->offset);
-                    SDL_Rect rect{pos.x, pos.y, tile.w, tile.h};
+                    SDL_Rect rect{pos.x, pos.y, (int)tile.size.x, (int)tile.size.y};
 
                     if (tile.transformation == "")
                     {
@@ -114,8 +114,8 @@ namespace GreenBeret
                                                                  SDL_FLIP_VERTICAL);
                         }
 
-                        SDL_Point center{(int)tile.position.x + tile.w / 2,
-                                         (int)tile.position.y + tile.h / 2};
+                        SDL_Point center{(int)tile.position.x + (int)(tile.size.x / 2),
+                                         (int)tile.position.y + (int)(tile.size.y / 2)};
                         SDL_RenderCopyEx(Window::Get()->renderer, wadFile->GetImage(tile.fileName),
                                          nullptr, &rect, 0, &center, flip);
                     }
@@ -138,8 +138,8 @@ namespace GreenBeret
             {
                 for (int i = 0; i < sector.points.size(); i++)
                 {
-                    PointF p1 = sector.points.at(i);
-                    PointF p2 = sector.points.at((i + 1) % sector.points.size());
+                    Vector2 p1 = sector.points.at(i);
+                    Vector2 p2 = sector.points.at((i + 1) % sector.points.size());
 
                     SDL_Point p3 = (SDL_Point)(p1 - Map::Get()->offset);
                     SDL_Point p4 = (SDL_Point)(p2 - Map::Get()->offset);

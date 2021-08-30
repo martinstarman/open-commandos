@@ -2,6 +2,7 @@
 
 #include "Sector.h"
 #include "Utils.h"
+#include "Vector2.h"
 
 #include <SDL.h>
 #include <string>
@@ -43,7 +44,7 @@ namespace GreenBeret
                         auto values = split(line, ' ');
                         float x = std::stof(values.at(0));
                         float y = std::stof(values.at(1)) * sin40;
-                        points.emplace_back(PointF(x, y));
+                        points.emplace_back(Vector2(x, y));
                     }
 
                     block = BLOCK::SECTOR;
@@ -62,7 +63,7 @@ namespace GreenBeret
                         std::getline(file, line);
                         auto values = split(line, ' ');
                         int vertexNo = std::stoi(values.at(0));
-                        std::vector<PointF> sectorPoints;
+                        std::vector<Vector2> sectorPoints;
 
                         // TODO: use remaining values on line (7 integers)
 

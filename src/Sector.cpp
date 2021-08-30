@@ -1,12 +1,12 @@
 #include "Sector.h"
 
-#include "PointF.h"
+#include "Vector2.h"
 
 #include <vector>
 
 namespace GreenBeret
 {
-    Sector::Sector(std::vector<PointF> points)
+    Sector::Sector(std::vector<Vector2> points)
         : points(points)
     {
     }

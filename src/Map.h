@@ -1,7 +1,7 @@
 #pragma once
 
-#include "PointF.h"
 #include "SECFile.h"
+#include "Vector2.h"
 #include "VOLFile.h"
 #include "WADFile.h"
 
@@ -17,7 +17,7 @@ namespace GreenBeret
         void Load(const std::string &name);
         void Render();
         void Move(int x, int y);
-        PointF offset;
+        Vector2 offset;
     private:
         Map();
         static Map *instance;

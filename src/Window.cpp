@@ -16,12 +16,11 @@ namespace GreenBeret
     }
 
     Window::Window()
-        : w(640),
-          h(480)
+        : size(640, 480)
     {
 
         window = SDL_CreateWindow("Green Beret", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                  w, h, SDL_WINDOW_SHOWN);
+                                  (int)size.x, (int)size.y, SDL_WINDOW_SHOWN);
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
