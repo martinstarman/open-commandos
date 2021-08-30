@@ -1,5 +1,7 @@
 #pragma once
+
 #include "PointF.h"
+
 #include <string>
 #include <vector>
 

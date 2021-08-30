@@ -1,11 +1,14 @@
 #include "Map.h"
+
 #include "PointF.h"
-#include <SDL.h>
 #include "SECFile.h"
 #include "Utils.h"
 #include "VOLFile.h"
 #include "WADFile.h"
 #include "Window.h"
+
+#include <algorithm>
+#include <SDL.h>
 
 namespace GreenBeret
 {
@@ -28,75 +31,43 @@ namespace GreenBeret
     Map::~Map()
     {
         delete instance;
-        delete wad_file;
-        delete vol_file;
-        delete sec_file;
+        delete wadFile;
+        delete volFile;
+        delete secFile;
     }
 
     void Map::Load(const std::string &name)
     {
-        vol_file = new VOLFile("DATOS/MISIONES/MAPA" + name + ".VOL");
-        vol_file->Parse();
+        volFile = new VOLFile("DATOS/MISIONES/MAPA" + name + ".VOL");
+        volFile->Parse();
 
-        wad_file = new WADFile("DATOS/RECURSOS/BMPS/MAP/FASE" + name + ".WAD");
-        wad_file->Parse();
+        // sort polygons by z index
+        std::sort(volFile->polygons.begin(), volFile->polygons.end(),
+                  [](Polygon a, Polygon b) -> bool
+                  { return a.z < b.z; });
 
-        sec_file = new SECFile("DATOS/MISIONES/MAPA" + name + ".SEC");
-        sec_file->Parse();
+        wadFile = new WADFile("DATOS/RECURSOS/BMPS/MAP/FASE" + name + ".WAD");
+        wadFile->Parse();
+
+        secFile = new SECFile("DATOS/MISIONES/MAPA" + name + ".SEC");
+        secFile->Parse();
     }
 
     void Map::Render()
     {
-        for (const auto &tile : vol_file->tiles)
+        for (const auto &polygon : volFile->polygons)
         {
-            if (tile.sprite.at(0) != '-') // sprites starting with "minus" are invisible
-            {
-                SDL_Point pos = (SDL_Point)(PointF(tile.x, tile.y) - Map::Get()->offset);
-                SDL_Rect rect{pos.x, pos.y, tile.w, tile.h};
+            // pink
+            SDL_SetRenderDrawColor(Window::Get()->renderer, 255, 51, 239, 255);
 
-                if (tile.transformation == "")
-                {
-                    SDL_RenderCopy(Window::Get()->renderer, wad_file->GetImage(tile.sprite),
-                                   nullptr, &rect);
-                }
-                else
-                {
-                    SDL_RendererFlip flip;
-
-                    if (tile.transformation == "X")
-                    {
-                        flip = SDL_FLIP_HORIZONTAL;
-                    }
-                    else if (tile.transformation == "Y")
-                    {
-                        flip = SDL_FLIP_VERTICAL;
-                    }
-                    else
-                    {
-                        flip = static_cast<SDL_RendererFlip>(SDL_FLIP_HORIZONTAL |
-                                                             SDL_FLIP_VERTICAL);
-                    }
-
-                    SDL_Point center{tile.x + tile.w / 2, tile.y + tile.h / 2};
-                    SDL_RenderCopyEx(Window::Get()->renderer, wad_file->GetImage(tile.sprite),
-                                     nullptr, &rect, 0, &center, flip);
-                    // red
-                    SDL_SetRenderDrawColor(Window::Get()->renderer, 255, 0, 0, 255);
-                    SDL_RenderDrawRect(Window::Get()->renderer, &rect);
-                }
-            }
-        }
-
-        // pink
-        SDL_SetRenderDrawColor(Window::Get()->renderer, 255, 51, 239, 255);
-
-        for (const auto &polygon : vol_file->polygons)
-        {
             // draw polygon center
             SDL_Point center = (SDL_Point)(polygon.center - Map::Get()->offset);
-            SDL_RenderDrawLine(Window::Get()->renderer, center.x - 5, center.y - 5, center.x + 5, center.y + 5);
-            SDL_RenderDrawLine(Window::Get()->renderer, center.x + 5, center.y - 5, center.x - 5, center.y + 5);
+            SDL_RenderDrawLine(Window::Get()->renderer, center.x - 5, center.y - 5, center.x + 5,
+                               center.y + 5);
+            SDL_RenderDrawLine(Window::Get()->renderer, center.x + 5, center.y - 5, center.x - 5,
+                               center.y + 5);
 
+            // draw polygon
             if (polygon.points.size() > 1)
             {
                 for (int i = 0; i < polygon.points.size(); i++)
@@ -111,12 +82,57 @@ namespace GreenBeret
                     SDL_RenderDrawLine(Window::Get()->renderer, p3.x, p3.y, p4.x, p4.y);
                 }
             }
+
+            // draw tiles
+            for (const auto &tile : polygon.tiles)
+            {
+                if (tile.fileName.at(0) != '-') // sprites starting with "minus" are invisible
+                {
+                    SDL_Point pos = (SDL_Point)(tile.position - Map::Get()->offset);
+                    SDL_Rect rect{pos.x, pos.y, tile.w, tile.h};
+
+                    if (tile.transformation == "")
+                    {
+                        SDL_RenderCopy(Window::Get()->renderer, wadFile->GetImage(tile.fileName),
+                                       nullptr, &rect);
+                    }
+                    else
+                    {
+                        SDL_RendererFlip flip;
+
+                        if (tile.transformation == "X")
+                        {
+                            flip = SDL_FLIP_HORIZONTAL;
+                        }
+                        else if (tile.transformation == "Y")
+                        {
+                            flip = SDL_FLIP_VERTICAL;
+                        }
+                        else
+                        {
+                            flip = static_cast<SDL_RendererFlip>(SDL_FLIP_HORIZONTAL |
+                                                                 SDL_FLIP_VERTICAL);
+                        }
+
+                        SDL_Point center{(int)tile.position.x + tile.w / 2,
+                                         (int)tile.position.y + tile.h / 2};
+                        SDL_RenderCopyEx(Window::Get()->renderer, wadFile->GetImage(tile.fileName),
+                                         nullptr, &rect, 0, &center, flip);
+                    }
+
+                    // red
+                    // draw tile rectangle
+                    //SDL_SetRenderDrawColor(Window::Get()->renderer, 255, 0, 0, 255);
+                    //SDL_RenderDrawRect(Window::Get()->renderer, &rect);
+                }
+            }
         }
 
         // blue
         SDL_SetRenderDrawColor(Window::Get()->renderer, 51, 255, 239, 255);
 
-        for (const auto &sector : sec_file->sectors)
+        // draw sectors
+        for (const auto &sector : secFile->sectors)
         {
             if (sector.points.size() > 1)
             {
@@ -144,17 +160,17 @@ namespace GreenBeret
         {
             offset.x = 0;
         }
-        if (offset.x > vol_file->w - Window::Get()->w)
+        if (offset.x > volFile->w - Window::Get()->w)
         {
-            offset.x = vol_file->w - Window::Get()->w;
+            offset.x = volFile->w - Window::Get()->w;
         }
         if (offset.y < 0)
         {
             offset.y = 0;
         }
-        if (offset.y > vol_file->h - Window::Get()->h)
+        if (offset.y > volFile->h - Window::Get()->h)
         {
-            offset.y = vol_file->h - Window::Get()->h;
+            offset.y = volFile->h - Window::Get()->h;
         }
         */
     }

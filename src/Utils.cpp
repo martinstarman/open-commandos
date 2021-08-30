@@ -1,5 +1,7 @@
-#include "Map.h"
 #include "Utils.h"
+
+#include "Map.h"
+
 #include <iostream>
 #include <math.h>
 #include <regex>

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fstream>
 #include <string>
 
@@ -12,7 +13,7 @@ namespace GreenBeret
         void Extract();
 
     private:
-        void ReadDir(const std::string &curr_dir, int offset);
+        void ReadDir(const std::string &dirName, int dirOffset);
         std::ifstream file;
     };
 } // namespace GreenBeret

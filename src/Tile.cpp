@@ -2,16 +2,14 @@
 
 namespace GreenBeret
 {
-    Tile::Tile(int x, int y, int w, int h, int offset_x, int offset_y, int brightness,
-               const std::string &sprite, const std::string &transformation)
-        : x(x),
-          y(y),
+    Tile::Tile(int x, int y, int w, int h, int offsetX, int offsetY, int brightness,
+               const std::string &fileName, const std::string &transformation)
+        : position(x, y),
           w(w),
           h(h),
-          offset_x(offset_x),
-          offset_y(offset_y),
+          offset(offsetX, offsetY),
           brightness(brightness),
-          sprite(sprite),
+          fileName(fileName),
           transformation(transformation)
     {
     }

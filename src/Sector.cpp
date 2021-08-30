@@ -1,5 +1,7 @@
 #include "Sector.h"
+
 #include "PointF.h"
+
 #include <vector>
 
 namespace GreenBeret

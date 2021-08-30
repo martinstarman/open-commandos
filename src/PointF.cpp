@@ -1,5 +1,7 @@
 #include "PointF.h"
 
+#include <SDL.h>
+
 namespace GreenBeret
 {
     PointF::PointF(float x, float y)

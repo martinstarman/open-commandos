@@ -1,9 +1,11 @@
 #include "Game.h"
+
 #include "DIRFile.h"
-#include <filesystem>
 #include "Map.h"
 #include "Utils.h"
 #include "Window.h"
+
+#include <filesystem>
 
 namespace GreenBeret
 {
@@ -15,8 +17,8 @@ namespace GreenBeret
         {
             // TODO: why is there no /DATOS/RECURSOS/BMPS/MAP directory in steam versions??
             // TODO: check if file exists
-            DIRFile dir_file("WARGAME.DIR");
-            dir_file.Extract();
+            DIRFile dirFile("WARGAME.DIR");
+            dirFile.Extract();
         }
 
         Map::Get()->Load("0000");
@@ -26,16 +28,16 @@ namespace GreenBeret
 
     void Game::Run()
     {
-        bool is_running = true;
+        bool isRunning = true;
         SDL_Event event;
 
-        while (is_running)
+        while (isRunning)
         {
             while (SDL_PollEvent(&event))
             {
                 if (event.type == SDL_QUIT)
                 {
-                    is_running = false;
+                    isRunning = false;
                 }
             }
 

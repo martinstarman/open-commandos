@@ -1,9 +1,11 @@
 #pragma once
-#include <string>
+
 #include "PointF.h"
 #include "SECFile.h"
 #include "VOLFile.h"
 #include "WADFile.h"
+
+#include <string>
 
 namespace GreenBeret
 {
@@ -19,8 +21,8 @@ namespace GreenBeret
     private:
         Map();
         static Map *instance;
-        WADFile *wad_file;
-        VOLFile *vol_file;
-        SECFile *sec_file;
+        WADFile *wadFile;
+        VOLFile *volFile;
+        SECFile *secFile;
     };
 } // namespace GreenBeret

@@ -1,5 +1,8 @@
 #pragma once
+
 #include "PointF.h"
+#include "Tile.h"
+
 #include <string>
 #include <vector>
 
@@ -8,14 +11,13 @@ namespace GreenBeret
     class Polygon
     {
     public:
-        Polygon(const std::string &name, float x, float y, int z, int h, int vertices_no, int tiles_no);
+        Polygon(const std::string &name, float x, float y, int z, int h);
         ~Polygon();
         std::string name;
         PointF center;
         int z;
         int h;
-        int vertices_no;
-        int tiles_no;
         std::vector<PointF> points;
+        std::vector<Tile> tiles;
     };
 } // namespace GreenBeret

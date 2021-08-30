@@ -1,8 +1,10 @@
 #pragma once
-#include <fstream>
+
 #include "Polygon.h"
-#include <string>
 #include "Tile.h"
+
+#include <fstream>
+#include <string>
 #include <vector>
 
 namespace GreenBeret
@@ -17,7 +19,6 @@ namespace GreenBeret
         int w;
         int h;
         std::vector<Polygon> polygons;
-        std::vector<Tile> tiles;
 
     private:
         std::ifstream file;

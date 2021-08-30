@@ -1,8 +1,10 @@
 #include "SECFile.h"
-#include <SDL.h>
+
 #include "Sector.h"
-#include <string>
 #include "Utils.h"
+
+#include <SDL.h>
+#include <string>
 #include <vector>
 
 namespace GreenBeret
@@ -32,10 +34,10 @@ namespace GreenBeret
             {
                 if (block == BLOCK::VERTEX)
                 {
-                    int vertices_no = std::stoi(line);
-                    SDL_Log("Number of vertices: %i", vertices_no);
+                    int vertexNo = std::stoi(line);
+                    SDL_Log("Number of vertices: %i", vertexNo);
 
-                    for (int i = 0; i < vertices_no; i++)
+                    for (int i = 0; i < vertexNo; i++)
                     {
                         std::getline(file, line);
                         auto values = split(line, ' ');
@@ -48,10 +50,10 @@ namespace GreenBeret
                 }
                 else if (block == BLOCK::SECTOR)
                 {
-                    int sectors_no = std::stoi(line);
-                    SDL_Log("Number of sectors: %i", sectors_no);
+                    int sectorNo = std::stoi(line);
+                    SDL_Log("Number of sectors: %i", sectorNo);
 
-                    for (int i = 0; i < sectors_no; i++)
+                    for (int i = 0; i < sectorNo; i++)
                     {
                         // skip empty line
                         std::getline(file, line); // TODO: make it more robust
@@ -59,19 +61,19 @@ namespace GreenBeret
                         // number of vertices
                         std::getline(file, line);
                         auto values = split(line, ' ');
-                        int vertices_no = std::stoi(values.at(0));
-                        std::vector<PointF> sector_points;
+                        int vertexNo = std::stoi(values.at(0));
+                        std::vector<PointF> sectorPoints;
 
                         // TODO: use remaining values on line (7 integers)
 
-                        for (int j = 0; j < vertices_no; j++)
+                        for (int j = 0; j < vertexNo; j++)
                         {
                             std::getline(file, line);
-                            int vertex_pos = std::stoi(line);
-                            sector_points.emplace_back(points.at(vertex_pos));
+                            int vertexPos = std::stoi(line);
+                            sectorPoints.emplace_back(points.at(vertexPos));
                         }
 
-                        Sector sector(sector_points);
+                        Sector sector(sectorPoints);
                         sectors.emplace_back(sector);
                         block = BLOCK::BRIDGE;
                     }

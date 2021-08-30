@@ -1,8 +1,10 @@
 #include "DIRFile.h"
+
+#include "Utils.h"
+
 #include <filesystem>
 #include <SDL.h>
 #include <string>
-#include "Utils.h"
 #include <vector>
 
 namespace GreenBeret
@@ -23,7 +25,7 @@ namespace GreenBeret
         ReadDir(std::filesystem::current_path().string(), 0);
     }
 
-    void DIRFile::ReadDir(const std::string &dir_name, int dir_offset)
+    void DIRFile::ReadDir(const std::string &dirName, int dirOffset)
     {
         std::vector<char> buffer;
         int i = 0;
@@ -31,39 +33,39 @@ namespace GreenBeret
 
         while (type != -1)
         {
-            int curr_offset = dir_offset + (44 * i++);
+            int currenOffset = dirOffset + (44 * i++);
 
             // name
             buffer.resize(32);
-            file.seekg(curr_offset, file.beg);
+            file.seekg(currenOffset, file.beg);
             file.read(&buffer[0], 32);
             std::string name(buffer.begin(), buffer.end());
             name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
             SDL_Log("File: %s", name.c_str());
 
-            curr_offset += 32;
+            currenOffset += 32;
 
             // type
             buffer.resize(1);
-            file.seekg(curr_offset, file.beg);
+            file.seekg(currenOffset, file.beg);
             file.read(&buffer[0], 1);
             type = (int)buffer.at(0);
-            //SDL_Log("File type: %i", file_type);
+            SDL_Log("File type: %i", type);
 
-            curr_offset += 4;
+            currenOffset += 4;
 
             // size
             buffer.resize(4);
-            file.seekg(curr_offset, file.beg);
+            file.seekg(currenOffset, file.beg);
             file.read(&buffer[0], 4);
             int size = GetBufferValue(buffer);
             SDL_Log("Size: %i", size);
 
-            curr_offset += 4;
+            currenOffset += 4;
 
             // offset
             buffer.resize(4);
-            file.seekg(curr_offset, file.beg);
+            file.seekg(currenOffset, file.beg);
             file.read(&buffer[0], 4);
             int offset = GetBufferValue(buffer);
             SDL_Log("Offset: %i", offset);
@@ -76,22 +78,22 @@ namespace GreenBeret
             {
                 if (size > 0)
                 {
-                    std::string file_name = dir_name + "/" + name;
-                    SDL_Log("Writing file: %s", file_name.c_str());
-                    std::fstream out_file(file_name, std::ios::out | std::ios::binary);
+                    std::string fileName = dirName + "/" + name;
+                    SDL_Log("Writing file: %s", fileName.c_str());
+                    std::fstream outFile(fileName, std::ios::out | std::ios::binary);
                     buffer.resize(size);
                     file.seekg(offset, file.beg);
                     file.read(&buffer[0], size);
-                    out_file.write(&buffer[0], buffer.size());
-                    out_file.close();
+                    outFile.write(&buffer[0], buffer.size());
+                    outFile.close();
                 }
             }
             else if (type == 1)
             {
-                std::string new_dir_name = dir_name + "/" + name;
-                SDL_Log("Creating dir: %s", new_dir_name.c_str());
-                std::filesystem::create_directory(new_dir_name);
-                ReadDir(new_dir_name, offset);
+                std::string newDirName = dirName + "/" + name;
+                SDL_Log("Creating dir: %s", newDirName.c_str());
+                std::filesystem::create_directory(newDirName);
+                ReadDir(newDirName, offset);
             }
         }
     }

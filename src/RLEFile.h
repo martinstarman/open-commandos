@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fstream>
 #include <SDL.h>
 #include <string>
@@ -13,11 +14,10 @@ namespace GreenBeret
         ~RLEFile();
         int Parse(int offset);
         SDL_Texture *GetImage(std::vector<char> palette);
-        int palette_id;
+        int paletteId;
 
     private:
         std::ifstream file;
-        int pixels_no;
         int h;
         int w;
         std::vector<char> pixels;

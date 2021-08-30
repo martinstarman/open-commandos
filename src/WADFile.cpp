@@ -1,12 +1,14 @@
 #include "WADFile.h"
+
 #include "BMPFile.h"
 #include "RLEFile.h"
+#include "Utils.h"
+#include "Window.h"
+
 #include <fstream>
 #include <SDL.h>
 #include <string>
-#include "Utils.h"
 #include <vector>
-#include "Window.h"
 
 namespace GreenBeret
 {
@@ -41,16 +43,16 @@ namespace GreenBeret
         buffer.resize(4);
         file.seekg(offset, file.beg);
         file.read(&buffer[0], 4);
-        int palettes_no = GetBufferValue(buffer);
-        SDL_Log("Number of palettes: %i", palettes_no);
+        int paletteNo = GetBufferValue(buffer);
+        SDL_Log("Number of palettes: %i", paletteNo);
 
         offset += 4;
 
         // palettes
         std::vector<std::vector<char>> palettes;
-        palettes.resize(palettes_no);
+        palettes.resize(paletteNo);
         buffer.resize(512);
-        for (int i = 0; i < palettes_no; i++)
+        for (int i = 0; i < paletteNo; i++)
         {
             file.seekg(offset, file.beg);
             file.read(&buffer[0], 512);
@@ -84,18 +86,18 @@ namespace GreenBeret
 
             if (name.compare(name.length() - 3, 3, "BMP") == 0)
             {
-                BMPFile bmp_file(path);
-                offset += bmp_file.Parse(offset);
-                auto palette = palettes.at(bmp_file.palette_id);
-                SDL_Texture *texture = bmp_file.GetImage(palette);
+                BMPFile bmpFile(path);
+                offset += bmpFile.Parse(offset);
+                auto palette = palettes.at(bmpFile.paletteId);
+                SDL_Texture *texture = bmpFile.GetImage(palette);
                 textures[name] = texture;
             }
             else
             {
-                RLEFile rle_file(path);
-                offset += rle_file.Parse(offset);
-                auto palette = palettes.at(rle_file.palette_id);
-                SDL_Texture *texture = rle_file.GetImage(palette);
+                RLEFile rleFile(path);
+                offset += rleFile.Parse(offset);
+                auto palette = palettes.at(rleFile.paletteId);
+                SDL_Texture *texture = rleFile.GetImage(palette);
                 textures[name] = texture;
             }
         }
