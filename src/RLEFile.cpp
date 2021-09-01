@@ -90,9 +90,10 @@ namespace GreenBeret
 
                 for (int j = 0; j < compressedPixels; j++)
                 {
-                    // pink color
-                    imagePixels.push_back(28);
-                    imagePixels.push_back((char)248);
+                    imagePixels.push_back((unsigned char)255);
+                    imagePixels.push_back((unsigned char)255);
+                    imagePixels.push_back((unsigned char)255);
+                    imagePixels.push_back(0);
                 }
             }
             else if ((unsigned char)pixels.at(i) == 254) // semi transparent
@@ -104,10 +105,23 @@ namespace GreenBeret
                 {
                     i++;
                     int paletteIndex = (unsigned char)pixels.at(i);
-                    int color1 = palette.at(paletteIndex * 2);
-                    int color2 = palette.at(paletteIndex * 2 + 1); // TODO: semi transparent
-                    imagePixels.push_back(color1);
-                    imagePixels.push_back(color2); // TODO: 127
+                    // GGGBBBBB
+                    unsigned char firstByte = palette.at(paletteIndex * 2);
+                    // RRRRRGGG
+                    unsigned char secondByte = palette.at(paletteIndex * 2 + 1);
+                    // RRRRRGGGGGGBBBBB
+                    unsigned int color = (int)secondByte << 8 | firstByte;
+                    // RRRRR000
+                    unsigned int r = (color & 0xF800) >> 8;
+                    // GGGGGG00
+                    unsigned int g = (color & 0x07E0) >> 3;
+                    // BBBBB000
+                    unsigned int b = (color & 0x001F) << 3;
+
+                    imagePixels.push_back((unsigned char)r);
+                    imagePixels.push_back((unsigned char)g);
+                    imagePixels.push_back((unsigned char)b);
+                    imagePixels.push_back((unsigned char)127);
                 }
             }
             else // opaque
@@ -118,20 +132,30 @@ namespace GreenBeret
                 {
                     i++;
                     int paletteIndex = (unsigned char)pixels.at(i);
-                    int color1 = palette.at(paletteIndex * 2);
-                    int color2 = palette.at(paletteIndex * 2 + 1);
-                    imagePixels.push_back(color1);
-                    imagePixels.push_back(color2);
+                    // GGGBBBBB
+                    unsigned char firstByte = palette.at(paletteIndex * 2);
+                    // RRRRRGGG
+                    unsigned char secondByte = palette.at(paletteIndex * 2 + 1);
+                    // RRRRRGGGGGGBBBBB
+                    unsigned int color = (int)secondByte << 8 | firstByte;
+                    // RRRRR000
+                    unsigned int r = (color & 0xF800) >> 8;
+                    // GGGGGG00
+                    unsigned int g = (color & 0x07E0) >> 3;
+                    // BBBBB000
+                    unsigned int b = (color & 0x001F) << 3;
+
+                    imagePixels.push_back((unsigned char)r);
+                    imagePixels.push_back((unsigned char)g);
+                    imagePixels.push_back((unsigned char)b);
+                    imagePixels.push_back((unsigned char)255);
                 }
             }
         }
 
-        // RGB 565
-        // TODO: https://wiki.libsdl.org/SDL_SetSurfaceRLE ??
-        SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(&imagePixels[0], w, h, 16, w * 2, 0xF800,
-                                                        0x07E0, 0x001F, 0x0000);
-        Uint32 colorkey = SDL_MapRGB(surface->format, 255, 0, 225);
-        SDL_SetColorKey(surface, SDL_TRUE, colorkey);
+        // ARGB8888
+        SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(&imagePixels[0], w, h, 32, w * 4, 0x000000FF,
+                                                        0x0000FF00, 0x00FF0000, 0xFF000000);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(Window::Get()->renderer, surface);
         SDL_FreeSurface(surface);
         return texture;
