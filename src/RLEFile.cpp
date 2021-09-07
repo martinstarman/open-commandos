@@ -79,7 +79,7 @@ namespace GreenBeret
 
     SDL_Texture *RLEFile::GetImage(std::vector<char> palette)
     {
-        std::vector<char> imagePixels;
+        std::vector<unsigned char> imagePixels;
 
         for (int i = 0; i < pixels.size(); i++)
         {
@@ -153,9 +153,22 @@ namespace GreenBeret
             }
         }
 
-        // ARGB8888
-        SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(&imagePixels[0], w, h, 32, w * 4, 0x000000FF,
-                                                        0x0000FF00, 0x00FF0000, 0xFF000000);
+        Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+#else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+#endif
+
+        // RGBA8888
+        SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(&imagePixels[0], w, h, 32, w * 4, rmask,
+                                                        gmask, bmask, amask);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(Window::Get()->renderer, surface);
         SDL_FreeSurface(surface);
         return texture;
