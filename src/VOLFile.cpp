@@ -24,6 +24,11 @@ namespace GreenBeret
     VOLFile::~VOLFile()
     {
         file.close();
+
+        for (int i = 0; i < polygons.size(); i++)
+        {
+            delete polygons[i];
+        }
     }
 
     void VOLFile::Parse()
@@ -75,7 +80,7 @@ namespace GreenBeret
                 // int vertexNo = std::stoi(values[5]);
                 // int tileNo = std::stoi(values[6]);
 
-                polygons.emplace_back(Polygon(name, x, y, z, h));
+                polygons.emplace_back(new Polygon(name, x, y, z, h));
             }
             // polygon point
             else if (line.find("POINT", 0) == 0)
@@ -88,7 +93,7 @@ namespace GreenBeret
                 float y = std::stof(values[1]) * sin40;
 
                 // add to last polygon
-                polygons.back().points.emplace_back(Vector2(x, y));
+                polygons.back()->points.emplace_back(Vector2(x, y));
             }
             // polygon tile
             else if (line.find("TILE", 0) == 0)
@@ -101,22 +106,22 @@ namespace GreenBeret
                 float y = std::stof(values[1]);
                 float w = std::stof(values[2]);
                 float h = std::stof(values[3]);
-                float offsetX = std::stof(values[4]);
-                float offsetY = std::stof(values[5]);
+                float shiftX = std::stof(values[4]);
+                float shiftY = std::stof(values[5]);
                 int brightness = std::stoi(values[6]);
                 std::string fileName = values[7];
                 std::string transformation = values[8];
 
-                fileName.erase(0, 1); // remove first "
+                fileName.erase(0, 1);                   // remove first "
                 fileName.erase(fileName.size() - 1, 1); // remove last "
 
-                transformation.erase(0, 1); // remove first "
+                transformation.erase(0, 1);                         // remove first "
                 transformation.erase(transformation.size() - 1, 1); // remove last "
                 transformation = trim(transformation);
 
                 // add to last polygon
-                polygons.back().tiles.emplace_back(Tile(x, y, w, h, offsetX, offsetY, brightness,
-                                                        fileName, transformation));
+                polygons.back()->tiles.emplace_back(new Tile(x, y, w, h, shiftX, shiftY, brightness,
+                                                             fileName, transformation));
             }
             else
             {

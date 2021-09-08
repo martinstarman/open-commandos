@@ -14,5 +14,11 @@ namespace GreenBeret
     {
     }
 
-    Polygon::~Polygon() = default;
+    Polygon::~Polygon()
+    {
+        for (int i = 0; i < tiles.size(); i++)
+        {
+            delete tiles[i];
+        }
+    }
 } // namespace GreenBeret

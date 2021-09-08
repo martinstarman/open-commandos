@@ -18,6 +18,6 @@ namespace GreenBeret
         int z;
         int h;
         std::vector<Vector2> points;
-        std::vector<Tile> tiles;
+        std::vector<Tile *> tiles;
     };
 } // namespace GreenBeret

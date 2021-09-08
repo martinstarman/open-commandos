@@ -42,7 +42,7 @@ namespace GreenBeret
             }
 
             HandleKeyboardState();
-            HandleMouseState();
+            // HandleMouseState();
             Render();
         }
     }
