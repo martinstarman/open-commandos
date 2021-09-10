@@ -30,6 +30,7 @@ add_executable(
     src/BMPFile.cpp
     src/RLEFile.cpp
     src/SECFile.cpp
+    src/MISFile.cpp
     src/Utils.cpp
 )
 

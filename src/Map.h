@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MISFile.h"
 #include "SECFile.h"
 #include "Vector2.h"
 #include "VOLFile.h"
@@ -21,6 +22,7 @@ namespace GreenBeret
     private:
         Map();
         static Map *instance;
+        MISFile *misFile;
         WADFile *wadFile;
         VOLFile *volFile;
         SECFile *secFile;

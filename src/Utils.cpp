@@ -22,10 +22,17 @@ namespace GreenBeret
         return value;
     }
 
-    std::string &trim(std::string &s)
+    std::string &replace(std::string &str, const std::string &subStr, const std::string &newSubStr)
     {
-        s = std::regex_replace(s, std::regex("\\s+"), "");
-        return s;
+        str = std::regex_replace(str, std::regex(subStr), newSubStr);
+        return str;
+    }
+
+    std::string &trim(std::string &str)
+    {
+        str = replace(str, "^\\s+", "");
+        str = replace(str, "\\s+$", "");
+        return str;
     }
 
     std::vector<std::string> split(const std::string &s, char delim)

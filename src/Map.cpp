@@ -1,5 +1,6 @@
 #include "Map.h"
 
+#include "MISFile.h"
 #include "SECFile.h"
 #include "Utils.h"
 #include "Vector2.h"
@@ -31,6 +32,7 @@ namespace GreenBeret
     Map::~Map()
     {
         delete instance;
+        delete misFile;
         delete wadFile;
         delete volFile;
         delete secFile;
@@ -38,8 +40,14 @@ namespace GreenBeret
 
     void Map::Load(const std::string &name)
     {
-        volFile = new VOLFile("DATOS/MISIONES/MAPA" + name + ".VOL");
+        misFile = new MISFile("DATOS/MISIONES/MAPA" + name + ".MIS");
+        misFile->Parse();
+
+        volFile = new VOLFile("DATOS/MISIONES/" + misFile->volFileName);
         volFile->Parse();
+
+        secFile = new SECFile("DATOS/MISIONES/" + misFile->secFileName);
+        secFile->Parse();
 
         // sort polygons by z index
         std::sort(volFile->polygons.begin(), volFile->polygons.end(),
@@ -56,9 +64,6 @@ namespace GreenBeret
                 tile->CreateTexture(wadFile->GetImage(tile->fileName));
             }
         }
-
-        secFile = new SECFile("DATOS/MISIONES/MAPA" + name + ".SEC");
-        secFile->Parse();
     }
 
     void Map::Render()
