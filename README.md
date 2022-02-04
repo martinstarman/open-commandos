@@ -14,6 +14,12 @@ example on Steam.
 - cooperation
 - ...
 
+## Building
+
+- install cmake
+- run ```cmake . -Bbuild -DSDL2_PATH=<path-to-sdl2>```
+- run ```cmake --build build```
+
 ## Running
 
 - build GreenBeret project
