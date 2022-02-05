@@ -14,7 +14,5 @@ namespace GreenBeret
         void Render();
         void HandleKeyboardState();
         void HandleMouseState();
-        int w;
-        int h;
     };
 } // namespace GreenBeret

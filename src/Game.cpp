@@ -10,8 +10,6 @@
 namespace GreenBeret
 {
     Game::Game()
-        : w(800),
-          h(600)
     {
         if (!std::filesystem::exists("DATOS"))
         {
