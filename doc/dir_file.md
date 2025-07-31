@@ -1,4 +1,4 @@
-# DIR file format
+# DIR file
 Archive containing all game data as list of entries. 
 
 ## `entry` format

@@ -8,10 +8,10 @@
 #include "raylib.h"
 #include "utils.h"
 
-DirFile::DirFile()
+DirFile::DirFile(std::string path)
 {
-  TraceLog(LOG_INFO, "UTILS: Opening .dir file");
-  dirFile.open(dirFileName, std::ifstream::binary);
+  TraceLog(LOG_INFO, ("UTILS: Opening .dir file " + path).c_str());
+  dirFile.open(path, std::ifstream::binary);
 }
 
 DirFile::~DirFile()

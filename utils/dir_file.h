@@ -7,14 +7,13 @@
 class DirFile
 {
 public:
-  DirFile();
+  DirFile(std::string path);
   ~DirFile();
   void Extract();
 
 private:
   std::ifstream dirFile;
   void ExtractDirectory(std::filesystem::path path, int directoryOffset);
-  std::string dirFileName = "WARGAME.DIR";
   int blockEntrySize = 44;
   int blockNameSize = 32;
   int blockTypeSize = 1;
