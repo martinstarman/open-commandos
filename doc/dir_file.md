@@ -1,5 +1,5 @@
 # DIR file
-Archive containing all game data as list of entries. 
+Archive containing all game data as list of entries.
 
 ## `entry` format
 

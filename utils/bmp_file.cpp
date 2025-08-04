@@ -2,10 +2,13 @@
 #include <vector>
 
 #include "bmp_file.h"
+#include "raylib.h"
 #include "utils.h"
 
 BmpFile::BmpFile()
-    : size(0)
+    : size(0),
+      height(0),
+      width(0)
 {
 }
 
@@ -13,21 +16,81 @@ BmpFile::~BmpFile()
 {
 }
 
-void BmpFile::WriteFrom(std::vector<char> &buffer)
+void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
 {
   int offset = 0;
 
-  std::vector<char> nameBuffer(buffer.begin() + offset, buffer.begin() + offset + blockFileNameSize);
+  std::vector<char> nameBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + blockFileNameSize);
   std::string name(nameBuffer.begin(), nameBuffer.end());
 
   offset += blockFileNameSize;
 
-  std::vector<char> pixelsCountBuffer(buffer.begin() + offset, buffer.begin() + offset + blockPixelsCountSize);
+  std::vector<char> pixelsCountBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + blockPixelsCountSize);
   int pixelsCount = GetBufferValue(pixelsCountBuffer);
 
-  size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
+  offset += blockPixelsCountSize + blockUnknown1Size;
 
-  // TODO: write file
+  std::vector<char> heightBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + blockHeightSize);
+  height = GetBufferValue(heightBuffer);
+  offset += blockHeightSize;
+
+  std::vector<char> widthBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + blockWidthSize);
+  width = GetBufferValue(widthBuffer);
+  offset += blockWidthSize + blockColorDepthSize + blockUnknown2Size;
+
+  std::vector<char> pixelsBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + pixelsCount);
+
+  offset += pixelsCount;
+
+  std::vector<char> paletteIndexBuffer(
+      buffer.begin() + offset,
+      buffer.begin() + offset + blockPaletteIndexSize);
+  int paletteIndex = GetBufferValue(paletteIndexBuffer);
+
+  std::vector<char> palette = palettes.at(paletteIndex);
+
+  std::vector<unsigned char> pixels;
+
+  for (int i = 0; i < pixelsBuffer.size() - 1; i++) // skip last byte in image
+  {
+    if (i % (width + 2) == width || i % (width + 2) == width + 1) // skip last 2 bytes on every line
+    {
+      continue;
+    }
+
+    int pixelIndex = (unsigned char)pixelsBuffer.at(i);
+
+    unsigned char firstByte = palette.at(pixelIndex * 2);      // GGGBBBBB
+    unsigned char secondByte = palette.at(pixelIndex * 2 + 1); // RRRRRGGG
+    unsigned int color = (int)secondByte << 8 | firstByte;     // RRRRRGGGGGGBBBBB
+    unsigned int red = (color & 0xF800) >> 8;                  // RRRRR000
+    unsigned int green = (color & 0x07E0) >> 3;                // GGGGGG00
+    unsigned int blue = (color & 0x001F) << 3;                 // BBBBB000
+
+    pixels.push_back((unsigned char)red);
+    pixels.push_back((unsigned char)green);
+    pixels.push_back((unsigned char)blue);
+    pixels.push_back((unsigned char)255);
+  }
+
+  Image image;
+  image.data = &pixels[0];
+  image.width = width;
+  image.height = height;
+  image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+  ExportImage(image, name.c_str());
+
+  size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
 }
 
 int BmpFile::Size()

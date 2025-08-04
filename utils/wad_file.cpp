@@ -69,7 +69,7 @@ void WadFile::Extract()
       wadFile.read(&buffer[0], wadFileSize - offset);
 
       BmpFile bmpFile = BmpFile();
-      bmpFile.WriteFrom(buffer);
+      bmpFile.WriteFrom(buffer, palettes); // TODO: write to correct path (eg. /DATOS/RECURSOS/BMPS/SYSTEM/GLOBAL/512X384.WAD/image.bmp)
 
       offset += bmpFile.Size();
     }
