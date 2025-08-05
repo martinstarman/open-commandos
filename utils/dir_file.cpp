@@ -29,9 +29,9 @@ void DirFile::ExtractDirectory(std::filesystem::path path, int directoryOffset)
 {
   std::vector<char> buffer;
   int directoryCount = 0;
-  int entryType = Type::File;
+  int entryType = EntryType::File;
 
-  while (entryType != Type::DirectoryEnd)
+  while (entryType != EntryType::DirectoryEnd)
   {
     int offset = directoryOffset + (blockEntrySize * directoryCount);
     directoryCount++;
@@ -64,11 +64,11 @@ void DirFile::ExtractDirectory(std::filesystem::path path, int directoryOffset)
     dirFile.read(&buffer[0], blockOffsetSize);
     int entryOffset = GetBufferValue(buffer);
 
-    if (entryType == Type::DirectoryEnd)
+    if (entryType == EntryType::DirectoryEnd)
     {
       TraceLog(LOG_INFO, "    > All files in directory extracted");
     }
-    else if (entryType == Type::File)
+    else if (entryType == EntryType::File)
     {
       if (entrySize > 0)
       {
@@ -82,7 +82,7 @@ void DirFile::ExtractDirectory(std::filesystem::path path, int directoryOffset)
         file.close();
       }
     }
-    else if (entryType == Type::Directory)
+    else if (entryType == EntryType::Directory)
     {
       std::filesystem::path directoryPath = path / entryName;
       TraceLog(LOG_INFO, ("    > Creating directory " + directoryPath.string()).c_str());

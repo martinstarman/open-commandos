@@ -20,7 +20,7 @@ private:
   int blockPaddingSize = 3;
   int blockSizeSize = 4;
   int blockOffsetSize = 4;
-  enum Type
+  enum EntryType
   {
     DirectoryEnd = -1,
     File = 0,

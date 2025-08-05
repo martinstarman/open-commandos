@@ -46,7 +46,7 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
   width = GetBufferValue(widthBuffer);
   offset += blockWidthSize + blockColorDepthSize + blockUnknown2Size;
 
-  std::vector<char> pixelsBuffer(
+  std::vector<unsigned char> pixelsBuffer(
       buffer.begin() + offset,
       buffer.begin() + offset + pixelsCount);
 
@@ -68,19 +68,19 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
       continue;
     }
 
-    int pixelIndex = (unsigned char)pixelsBuffer.at(i);
+    int pixelIndex = pixelsBuffer.at(i);
 
     unsigned char firstByte = palette.at(pixelIndex * 2);      // GGGBBBBB
     unsigned char secondByte = palette.at(pixelIndex * 2 + 1); // RRRRRGGG
-    unsigned int color = (int)secondByte << 8 | firstByte;     // RRRRRGGGGGGBBBBB
-    unsigned int red = (color & 0xF800) >> 8;                  // RRRRR000
-    unsigned int green = (color & 0x07E0) >> 3;                // GGGGGG00
-    unsigned int blue = (color & 0x001F) << 3;                 // BBBBB000
+    int color = (int)secondByte << 8 | firstByte;              // RRRRRGGGGGGBBBBB
+    int red = (color & 0xF800) >> 8;                           // RRRRR000
+    int green = (color & 0x07E0) >> 3;                         // GGGGGG00
+    int blue = (color & 0x001F) << 3;                          // BBBBB000
 
-    pixels.push_back((unsigned char)red);
-    pixels.push_back((unsigned char)green);
-    pixels.push_back((unsigned char)blue);
-    pixels.push_back((unsigned char)255);
+    pixels.push_back(red);
+    pixels.push_back(green);
+    pixels.push_back(blue);
+    pixels.push_back(255);
   }
 
   Image image;
@@ -88,7 +88,7 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-  ExportImage(image, name.c_str());
+  ExportImage(image, replace(name, "BMP", "png").c_str());
 
   size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
 }

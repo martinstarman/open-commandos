@@ -9,12 +9,12 @@
 
 ## `header` format
   
-| block name   | bytes | description                                                                                                       |
-| ------------ | ----- | ----------------------------------------------------------------------------------------------------------------- |
-| name         | 32    | file name                                                                                                         |
-| pixels count | 8     | = height * (width + 2) + 1, last 2 bytes of line equals first 2 bytes of line, last byte equals 3rd byte in image |
-| unknown      | 8     |                                                                                                                   |
-| height       | 4     |                                                                                                                   |
-| width        | 4     |                                                                                                                   |
-| color depth  | 2     |                                                                                                                   |
-| unknown      | 6     |                                                                                                                   |
+| block name   | bytes | description                                                                                                         |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------------- |
+| name         | 32    | file name                                                                                                           |
+| pixels count | 8     | `= height * (width + 2) + 1`, last 2 bytes of line equals first 2 bytes of line, last byte equals 3rd byte in image |
+| unknown      | 8     |                                                                                                                     |
+| height       | 4     |                                                                                                                     |
+| width        | 4     |                                                                                                                     |
+| color depth  | 2     |                                                                                                                     |
+| unknown      | 6     |                                                                                                                     |
