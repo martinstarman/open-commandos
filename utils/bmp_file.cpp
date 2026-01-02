@@ -88,7 +88,7 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-  ExportImage(image, replace(name, "BMP", "png").c_str());
+  ExportImage(image, Replace(name, "BMP", "png").c_str());
 
   size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
 }

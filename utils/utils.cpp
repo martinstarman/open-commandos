@@ -15,7 +15,7 @@ int GetBufferValue(std::vector<char> buffer)
   return value;
 }
 
-std::string replace(std::string string, std::string replace, std::string replaceWith)
+std::string Replace(std::string string, std::string replace, std::string replaceWith)
 {
   return std::regex_replace(string, std::regex(replace), replaceWith);
 }

@@ -69,7 +69,7 @@ void WadFile::Extract()
       wadFile.read(&buffer[0], wadFileSize - offset);
 
       BmpFile bmpFile = BmpFile();
-      bmpFile.WriteFrom(buffer, palettes); // TODO: write to correct path (eg. /DATOS/RECURSOS/BMPS/SYSTEM/GLOBAL/512X384.WAD/image.png)
+      bmpFile.WriteFrom(buffer, palettes);
 
       offset += bmpFile.Size();
     }
@@ -80,7 +80,7 @@ void WadFile::Extract()
       wadFile.read(&buffer[0], wadFileSize - offset);
 
       RleFile rleFile = RleFile();
-      rleFile.WriteFrom(buffer, palettes); // TODO: write to correct path (eg. /DATOS/RECURSOS/BMPS/SYSTEM/GLOBAL/512X384.WAD/image.png)
+      rleFile.WriteFrom(buffer, palettes);
 
       offset += rleFile.Size();
     }
