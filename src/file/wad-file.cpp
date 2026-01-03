@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <filesystem>
 #include <raylib.h>
 #include <string>
 #include "bmp-file.h"
@@ -6,7 +7,7 @@
 #include "../utils.h"
 #include "wad-file.h"
 
-WadFile::WadFile(std::string path)
+WadFile::WadFile(std::string path) : path(path)
 {
   TraceLog(LOG_INFO, ("UTILS: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);
@@ -53,6 +54,8 @@ void WadFile::Extract()
   offset += blockImagesCountSize;
   int imageFileNameSize = 32;
 
+  std::string wadFileDirectory = std::filesystem::path(path).parent_path().string();
+
   while (offset < wadFileSize)
   {
     buffer.resize(imageFileNameSize);
@@ -67,7 +70,7 @@ void WadFile::Extract()
       wadFile.seekg(offset, wadFile.beg);
       wadFile.read(&buffer[0], wadFileSize - offset);
 
-      BmpFile bmpFile = BmpFile();
+      BmpFile bmpFile = BmpFile(wadFileDirectory);
       bmpFile.WriteFrom(buffer, palettes);
 
       offset += bmpFile.Size();
@@ -78,7 +81,7 @@ void WadFile::Extract()
       wadFile.seekg(offset, wadFile.beg);
       wadFile.read(&buffer[0], wadFileSize - offset);
 
-      RleFile rleFile = RleFile();
+      RleFile rleFile = RleFile(wadFileDirectory);
       rleFile.WriteFrom(buffer, palettes);
 
       offset += rleFile.Size();

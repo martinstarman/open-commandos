@@ -11,6 +11,7 @@ public:
   void Extract();
 
 private:
+  std::string path;
   std::ifstream wadFile;
   int blockHeaderSize = 400;
   int blockPalettesCountSize = 4;

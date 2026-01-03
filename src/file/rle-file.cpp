@@ -5,8 +5,8 @@
 #include "rle-file.h"
 #include "../utils.h"
 
-RleFile::RleFile()
-    : size(0)
+RleFile::RleFile(std::string path)
+    : path(path), size(0)
 {
 }
 
@@ -122,7 +122,11 @@ void RleFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-  ExportImage(image, Replace(name, "RLE", "png").c_str());
+
+  std::string imageName = Replace(name, "RLE", "png");
+  std::string imagePath = path.append("/").append(imageName);
+
+  ExportImage(image, imagePath.c_str());
 
   size = blockHeaderSize +
          pixelsCount +

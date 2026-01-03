@@ -4,8 +4,9 @@
 #include "bmp-file.h"
 #include "../utils.h"
 
-BmpFile::BmpFile()
-    : size(0),
+BmpFile::BmpFile(std::string path)
+    : path(path),
+      size(0),
       height(0),
       width(0)
 {
@@ -87,7 +88,11 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-  ExportImage(image, Replace(name, "BMP", "png").c_str());
+
+  std::string imageName = Replace(name, "BMP", "png");
+  std::string imagePath = path.append("/").append(imageName);
+
+  ExportImage(image, imagePath.c_str());
 
   size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
 }

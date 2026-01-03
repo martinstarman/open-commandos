@@ -1,11 +1,12 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 class BmpFile
 {
 public:
-  BmpFile();
+  BmpFile(std::string path);
   ~BmpFile();
   void WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   int Size();
@@ -20,6 +21,7 @@ public:
   int blockPaletteIndexSize = 4;
 
 private:
+  std::string path;
   int size;
   int height;
   int width;

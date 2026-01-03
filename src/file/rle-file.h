@@ -1,16 +1,18 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 class RleFile
 {
 public:
-  RleFile();
+  RleFile(std::string path);
   ~RleFile();
   void WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   int Size();
 
 private:
+  std::string path;
   int size;
   int blockHeaderSize = 64;
   int blockFileNameSize = 32;

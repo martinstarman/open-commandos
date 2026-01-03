@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 int GetBufferValue(std::vector<char> buffer);
