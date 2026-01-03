@@ -1,12 +1,11 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <raylib.h>
 #include <string>
 #include <vector>
-
-#include "dir_file.h"
-#include "raylib.h"
-#include "utils.h"
+#include "dir-file.h"
+#include "../utils.h"
 
 DirFile::DirFile(std::string path)
 {

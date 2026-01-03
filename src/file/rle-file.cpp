@@ -1,9 +1,9 @@
+#include <raylib.h>
 #include <string>
 #include <vector>
 
-#include "raylib.h"
-#include "rle_file.h"
-#include "utils.h"
+#include "rle-file.h"
+#include "../utils.h"
 
 RleFile::RleFile()
     : size(0)

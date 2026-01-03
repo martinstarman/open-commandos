@@ -1,12 +1,11 @@
 #define RAYGUI_IMPLEMENTATION
 
+#include <raylib.h>
+#include <raygui.h>
 #include <string>
 #include <vector>
-
-#include "raylib.h"
-#include "raygui.h"
-#include "utils/dir_file.h"
-#include "utils/wad_file.h"
+#include "file/dir-file.h"
+#include "file/wad-file.h"
 
 std::vector<std::string> dirFilePaths = {
     "WARGAME.DIR"};

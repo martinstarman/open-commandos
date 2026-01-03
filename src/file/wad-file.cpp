@@ -1,11 +1,10 @@
 #include <algorithm>
+#include <raylib.h>
 #include <string>
-
-#include "bmp_file.h"
-#include "raylib.h"
-#include "rle_file.h"
-#include "utils.h"
-#include "wad_file.h"
+#include "bmp-file.h"
+#include "rle-file.h"
+#include "../utils.h"
+#include "wad-file.h"
 
 WadFile::WadFile(std::string path)
 {

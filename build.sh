@@ -1,11 +1,11 @@
 g++                          \
   -o build/opencommandos.exe \
   src/main.cpp               \
-  src/utils/bmp_file.cpp     \
-  src/utils/dir_file.cpp     \
-  src/utils/rle_file.cpp     \
-  src/utils/utils.cpp        \
-  src/utils/wad_file.cpp     \
+  src/utils.cpp              \
+  src/file/bmp-file.cpp      \
+  src/file/dir-file.cpp      \
+  src/file/rle-file.cpp      \
+  src/file/wad-file.cpp      \
   -I include                 \
   -L lib                     \
   -lraylib                   \
