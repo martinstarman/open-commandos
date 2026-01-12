@@ -9,7 +9,7 @@
 
 WadFile::WadFile(std::string path) : path(path)
 {
-  TraceLog(LOG_INFO, ("UTILS: Opening .wad file " + path).c_str());
+  TraceLog(LOG_INFO, ("FILE: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);
 }
 

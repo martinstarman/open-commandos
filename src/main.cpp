@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "file/dir-file.h"
+#include "file/mis-file/mis-file.h"
 #include "file/wad-file.h"
 
 std::vector<std::string> dirFilePaths = {
@@ -281,6 +282,18 @@ int main()
         WadFile wadFile = WadFile(wadFilePaths.at(i));
         wadFile.Extract();
       }
+    }
+
+    if (GuiButton(
+            (Rectangle){
+                windowWidth / 2 - buttonWidth / 2,
+                windowHeight / 2 - buttonHeight / 2 + (buttonHeight + buttonOffset) * 2,
+                buttonWidth,
+                buttonHeight},
+            "#7#Extract test mis file"))
+    {
+      MisFile misFile = MisFile("test.mis");
+      misFile.Parse();
     }
 
     EndDrawing();
