@@ -8,7 +8,7 @@
 // temp
 #include <iostream>
 
-MisFile::MisFile(std::string path) : key("")
+MisFile::MisFile(std::string path) : key(""), root(new MisValue())
 {
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
   misFile.open(path, std::ifstream::in);
@@ -18,9 +18,34 @@ MisFile::~MisFile()
 {
   TraceLog(LOG_INFO, "    > Done, closing .mis file");
   misFile.close();
+  delete root;
 }
 
 void MisFile::Parse()
+{
+  ReadNode(root);
+  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString() << "\n";
+  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".INTROSCRIPT")->GetString() << "\n";
+}
+
+std::string MisFile::ReadString()
+{
+  std::string string;
+
+  while (!isspace(misFile.peek()))
+  {
+    string.push_back(misFile.get());
+  }
+
+  return string;
+}
+
+int MisFile::ReadNumber()
+{
+  return atoi(ReadString().c_str());
+}
+
+void MisFile::ReadNode(MisValue *parent)
 {
   while (!misFile.eof())
   {
@@ -40,46 +65,37 @@ void MisFile::Parse()
       }
       else
       {
-        MisValue misValue;
-        misValue.SetString(string);
-        parsed[key] = misValue;
+        MisValue *misValue = new MisValue();
+        misValue->SetString(string);
+        parent->SetMisValue(key, misValue);
         key = "";
       }
     }
     else if (c == '-' || (c >= '0' && c <= '9'))
     {
       int number = ReadNumber();
-
-      MisValue misValue;
-      misValue.SetNumber(number);
-      parsed[key] = misValue;
+      MisValue *misValue = new MisValue();
+      misValue->SetNumber(number);
+      parent->SetMisValue(key, misValue);
       key = "";
+    }
+    else if (c == '[')
+    {
+      MisValue *misValue = new MisValue();
+      parent->SetMisValue(key, misValue);
+      key = "";
+      misFile.get();
+      ReadNode(misValue);
+    }
+    else if (c == ']')
+    {
+      misFile.get();
     }
     else
     {
       std::cout << "Unknown: " << misFile.get() << "\n";
     }
   }
-
-  std::cout << "OUT: " << parsed[".VOLUMENES"].GetString() << "\n";
-  std::cout << "OUT: " << parsed[".X"].GetNumber() << "\n";
-}
-
-std::string MisFile::ReadString()
-{
-  std::string string;
-
-  while (!isspace(misFile.peek()))
-  {
-    string.push_back(misFile.get());
-  }
-
-  return string;
-}
-
-int MisFile::ReadNumber()
-{
-  return atoi(ReadString().c_str());
 }
 
 // char MisFile::Peek()

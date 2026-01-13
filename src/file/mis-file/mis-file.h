@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <map>
 #include <string>
 #include "mis-value.h"
 
@@ -15,9 +14,10 @@ public:
 private:
   std::ifstream misFile;
   std::string key;
-  std::map<std::string, MisValue> parsed;
+  MisValue* root;
   std::string ReadString();
   int ReadNumber();
+  void ReadNode(MisValue *parent);
 
   // char Peek();
 };
