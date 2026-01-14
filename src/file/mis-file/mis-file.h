@@ -17,7 +17,7 @@ private:
   MisValue* root;
   std::string ReadString();
   int ReadNumber();
-  void ReadNode(MisValue *parent);
+  MisValue* ReadNode();
 
   // char Peek();
 };
