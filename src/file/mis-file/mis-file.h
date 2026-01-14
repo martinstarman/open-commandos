@@ -14,10 +14,10 @@ public:
 private:
   std::ifstream misFile;
   std::string key;
-  MisValue* root;
+  MisValue *root;
   std::string ReadString();
   int ReadNumber();
-  MisValue* ReadNode();
+  MisValue *ReadNode();
 
   // char Peek();
 };
