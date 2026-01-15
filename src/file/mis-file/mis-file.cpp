@@ -3,12 +3,12 @@
 #include <raylib.h>
 #include <string>
 #include "mis-file.h"
-#include "mis-value.h"
+#include "node.h"
 
 // temp
 #include <iostream>
 
-MisFile::MisFile(std::string path) : key("")
+MisFile::MisFile(const std::string &path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
   misFile.open(path, std::ifstream::in);
@@ -25,12 +25,33 @@ void MisFile::Parse()
 {
   root = ReadNode();
 
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString() << "\n";
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".INTROSCRIPT")->GetString() << "\n";
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".X")->GetNumber() << "\n";
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".TEST")->GetNode(".A")->GetString() << "\n";
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".TEST")->GetNode(".B")->GetString() << "\n";
-  std::cout << "OUT: " << root->GetNode(".FASE0000")->GetNode(".Y")->GetNumber() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".DATOSFICHEROSMISION")->GetChild(".VOLUMENES")->GetString() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".DATOSFICHEROSMISION")->GetChild(".INTROSCRIPT")->GetString() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".X")->GetNumber() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".TEST")->GetChild(".A")->GetString() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".TEST")->GetChild(".B")->GetString() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".Y")->GetNumber() << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".SCALE")->GetNumber() << "\n";
+  std::cout << "OUT: x:" << std::get<0>(root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetVec2()) << "\n";
+  std::cout << "OUT: y:" << std::get<1>(root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetVec2()) << "\n";
+  std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".BITMAP")->GetString() << "\n";
+  std::cout << "OUT: x:" << std::get<0>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
+  std::cout << "OUT: y:" << std::get<1>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
+  std::cout << "OUT: z:" << std::get<2>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
+}
+
+char MisFile::Peek()
+{
+  ReadSpaces();
+  return misFile.peek();
+}
+
+void MisFile::ReadSpaces()
+{
+  while (isspace(misFile.peek()))
+  {
+    misFile.get();
+  }
 }
 
 std::string MisFile::ReadString()
@@ -50,9 +71,10 @@ int MisFile::ReadNumber()
   return atoi(ReadString().c_str());
 }
 
-MisValue *MisFile::ReadNode()
+Node *MisFile::ReadNode()
 {
-  MisValue *node = new MisValue();
+  Node *node = new Node();
+  std::string key = "";
 
   while (!misFile.eof())
   {
@@ -72,26 +94,51 @@ MisValue *MisFile::ReadNode()
       }
       else
       {
-        MisValue *misValue = new MisValue();
-        misValue->SetString(string);
-        node->SetMisValue(key, misValue);
+        Node *child = new Node();
+        child->SetString(string);
+        node->SetChild(key, child);
         key = "";
       }
     }
-    else if (c == '-' || (c >= '0' && c <= '9'))
+    else if (c == '-' || (c >= '0' && c <= '9')) // TODO: handle decimal numbers (.SCALE)
     {
       int number = ReadNumber();
-      MisValue *misValue = new MisValue();
-      misValue->SetNumber(number);
-      node->SetMisValue(key, misValue);
+      Node *child = new Node();
+      child->SetNumber(number);
+      node->SetChild(key, child);
       key = "";
     }
     else if (c == '[')
     {
-      std::string s = key;
-      misFile.get();
-      key = "";
-      node->SetMisValue(s, ReadNode());
+      if (key == ".XY")
+      {
+        misFile.get();
+        std::tuple<int, int> vec2 = ReadVec2();
+        Node *child = new Node();
+        child->SetVec2(vec2);
+        node->SetChild(key, child);
+        key = "";
+      }
+      else if (key == ".XYZ")
+      {
+        misFile.get();
+        std::tuple<int, int, int> vec3 = ReadVec3();
+        Node *child = new Node();
+        child->SetVec3(vec3);
+        node->SetChild(key, child);
+        key = "";
+      }
+      else if (Peek() == '[')
+      {
+        // TODO: parse vec
+        std::cout << "VEC\n";
+      }
+      else
+      {
+        misFile.get();
+        node->SetChild(key, ReadNode());
+        key = "";
+      }
     }
     else if (c == ']')
     {
@@ -100,18 +147,35 @@ MisValue *MisFile::ReadNode()
     }
     else
     {
-      std::cout << "Unknown: " << misFile.get() << "\n";
+      std::cout << "Unknown character: " << misFile.get() << "\n";
     }
   }
 
   return node;
 }
 
-// char MisFile::Peek()
-// {
-//   while (misFile.peek() == ' ')
-//   {
-//     misFile.get();
-//   }
-//   return misFile.peek();
-// }
+std::tuple<int, int> MisFile::ReadVec2()
+{
+  ReadSpaces();
+  int x = ReadNumber();
+  ReadSpaces();
+  int y = ReadNumber();
+  ReadSpaces();
+  misFile.get(); // consume ']'
+
+  return std::make_tuple(x, y);
+}
+
+std::tuple<int, int, int> MisFile::ReadVec3()
+{
+  ReadSpaces();
+  int x = ReadNumber();
+  ReadSpaces();
+  int y = ReadNumber();
+  ReadSpaces();
+  int z = ReadNumber();
+  ReadSpaces();
+  misFile.get(); // consume ']'
+
+  return std::make_tuple(x, y, z);
+}

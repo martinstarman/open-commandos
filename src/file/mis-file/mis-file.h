@@ -2,22 +2,24 @@
 
 #include <fstream>
 #include <string>
-#include "mis-value.h"
+#include <tuple>
+#include "node.h"
 
 class MisFile
 {
 public:
-  MisFile(std::string path);
+  MisFile(const std::string &path);
   ~MisFile();
   void Parse();
 
 private:
   std::ifstream misFile;
-  std::string key;
-  MisValue *root;
+  Node *root;
+  char Peek();
+  void ReadSpaces();
   std::string ReadString();
   int ReadNumber();
-  MisValue *ReadNode();
-
-  // char Peek();
+  Node *ReadNode();
+  std::tuple<int, int> ReadVec2();
+  std::tuple<int, int, int> ReadVec3();
 };
