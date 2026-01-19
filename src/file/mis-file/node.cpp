@@ -49,26 +49,15 @@ Node *Node::GetChild(const std::string &key) const
   return children.at(key);
 }
 
-void Node::SetVec2(std::tuple<int, int> value)
+void Node::SetIntVec(std::vector<int> value)
 {
-  vec2 = value;
-  tag = NodeTag::Vec2;
+  intVec = value;
+  tag = NodeTag::IntVec;
 }
 
-std::tuple<int, int> Node::GetVec2() const
+std::vector<int> Node::GetIntVec() const
 {
-  return vec2;
-}
-
-void Node::SetVec3(std::tuple<int, int, int> value)
-{
-  vec3 = value;
-  tag = NodeTag::Vec3;
-}
-
-std::tuple<int, int, int> Node::GetVec3() const
-{
-  return vec3;
+  return intVec;
 }
 
 void Node::SetNodeVec(std::vector<Node *> value)

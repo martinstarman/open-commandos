@@ -33,15 +33,20 @@ void MisFile::Parse()
   std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".TEST")->GetChild(".B")->GetString() << "\n";
   std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".Y")->GetNumber() << "\n";
   std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".SCALE")->GetNumber() << "\n";
-  std::cout << "OUT: x:" << std::get<0>(root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetVec2()) << "\n";
-  std::cout << "OUT: y:" << std::get<1>(root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetVec2()) << "\n";
+  std::cout << "OUT: x:" << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetIntVec().at(0) << "\n";
+  std::cout << "OUT: y:" << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetIntVec().at(1) << "\n";
   std::cout << "OUT: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".BITMAP")->GetString() << "\n";
-  std::cout << "OUT: x:" << std::get<0>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
-  std::cout << "OUT: y:" << std::get<1>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
-  std::cout << "OUT: z:" << std::get<2>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
+  std::cout << "OUT: x:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(0) << "\n";
+  std::cout << "OUT: y:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(1) << "\n";
+  std::cout << "OUT: z:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(2) << "\n";
   std::cout << "OUT: v1:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[0]->GetChild(".STR")->GetString() << "\n";
   std::cout << "OUT: v2:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[1]->GetChild(".STR")->GetString() << "\n";
   std::cout << "OUT: v3:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[2]->GetChild(".STR")->GetString() << "\n";
+}
+
+bool MisFile::IsNumber(char c) const
+{
+  return c == '-' || (c >= '0' && c <= '9');
 }
 
 char MisFile::Peek()
@@ -104,7 +109,7 @@ Node *MisFile::ReadNode()
         key = "";
       }
     }
-    else if (c == '-' || (c >= '0' && c <= '9')) // TODO: handle decimal numbers (.SCALE)
+    else if (IsNumber(c)) // TODO: handle decimal numbers (.SCALE)
     {
       int number = ReadNumber();
       Node *child = new Node();
@@ -116,18 +121,11 @@ Node *MisFile::ReadNode()
     {
       misFile.get();
 
-      if (key == ".XY")
+      if (IsNumber(Peek()))
       {
-        std::tuple<int, int> vec2 = ReadVec2();
+        std::vector<int> intVec = ReadIntVec();
         Node *child = new Node();
-        child->SetVec2(vec2);
-        node->SetChild(key, child);
-      }
-      else if (key == ".XYZ")
-      {
-        std::tuple<int, int, int> vec3 = ReadVec3();
-        Node *child = new Node();
-        child->SetVec3(vec3);
+        child->SetIntVec(intVec);
         node->SetChild(key, child);
       }
       else if (Peek() == '[')
@@ -158,30 +156,25 @@ Node *MisFile::ReadNode()
   return node;
 }
 
-std::tuple<int, int> MisFile::ReadVec2()
+std::vector<int> MisFile::ReadIntVec()
 {
-  ReadSpaces();
-  int x = ReadNumber();
-  ReadSpaces();
-  int y = ReadNumber();
-  ReadSpaces();
+  std::vector<int> intVec;
+
+  while (misFile.peek() != ']')
+  {
+    if (isspace(misFile.peek()))
+    {
+      misFile.get();
+    }
+    else
+    {
+      intVec.push_back(ReadNumber());
+    }
+  }
+
   misFile.get(); // consume ']'
 
-  return std::make_tuple(x, y);
-}
-
-std::tuple<int, int, int> MisFile::ReadVec3()
-{
-  ReadSpaces();
-  int x = ReadNumber();
-  ReadSpaces();
-  int y = ReadNumber();
-  ReadSpaces();
-  int z = ReadNumber();
-  ReadSpaces();
-  misFile.get(); // consume ']'
-
-  return std::make_tuple(x, y, z);
+  return intVec;
 }
 
 std::vector<Node *> MisFile::ReadNodeVec()
