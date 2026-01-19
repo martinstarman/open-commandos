@@ -2,6 +2,7 @@
 #include <fstream>
 #include <raylib.h>
 #include <string>
+#include <vector>
 #include "mis-file.h"
 #include "node.h"
 
@@ -38,6 +39,9 @@ void MisFile::Parse()
   std::cout << "OUT: x:" << std::get<0>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
   std::cout << "OUT: y:" << std::get<1>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
   std::cout << "OUT: z:" << std::get<2>(root->GetChild(".FASE0000")->GetChild(".XYZ")->GetVec3()) << "\n";
+  std::cout << "OUT: v1:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[0]->GetChild(".STR")->GetString() << "\n";
+  std::cout << "OUT: v2:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[1]->GetChild(".STR")->GetString() << "\n";
+  std::cout << "OUT: v3:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec()[2]->GetChild(".STR")->GetString() << "\n";
 }
 
 char MisFile::Peek()
@@ -110,35 +114,35 @@ Node *MisFile::ReadNode()
     }
     else if (c == '[')
     {
+      misFile.get();
+
       if (key == ".XY")
       {
-        misFile.get();
         std::tuple<int, int> vec2 = ReadVec2();
         Node *child = new Node();
         child->SetVec2(vec2);
         node->SetChild(key, child);
-        key = "";
       }
       else if (key == ".XYZ")
       {
-        misFile.get();
         std::tuple<int, int, int> vec3 = ReadVec3();
         Node *child = new Node();
         child->SetVec3(vec3);
         node->SetChild(key, child);
-        key = "";
       }
       else if (Peek() == '[')
       {
-        // TODO: parse vec
-        std::cout << "VEC\n";
+        std::vector<Node *> nodeVec = ReadNodeVec();
+        Node *child = new Node();
+        child->SetNodeVec(nodeVec);
+        node->SetChild(key, child);
       }
       else
       {
-        misFile.get();
         node->SetChild(key, ReadNode());
-        key = "";
       }
+
+      key = "";
     }
     else if (c == ']')
     {
@@ -178,4 +182,26 @@ std::tuple<int, int, int> MisFile::ReadVec3()
   misFile.get(); // consume ']'
 
   return std::make_tuple(x, y, z);
+}
+
+std::vector<Node *> MisFile::ReadNodeVec()
+{
+  std::vector<Node *> nodeVec;
+
+  while (misFile.peek() != ']')
+  {
+    if (misFile.peek() == '[')
+    {
+      misFile.get();
+      nodeVec.push_back(ReadNode());
+    }
+    else
+    {
+      misFile.get();
+    }
+  }
+
+  misFile.get(); // consume ']'
+
+  return nodeVec;
 }

@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <vector>
 
 enum NodeTag
 {
@@ -11,7 +12,7 @@ enum NodeTag
   Child,
   Vec2,
   Vec3,
-  Vec,
+  NodeVec,
 };
 
 class Node
@@ -29,8 +30,8 @@ public:
   std::tuple<int, int> GetVec2() const;
   void SetVec3(std::tuple<int, int, int> value);
   std::tuple<int, int, int> GetVec3() const;
-  // TODO: SetVec
-  // TODO: GetVec
+  void SetNodeVec(std::vector<Node *> value);
+  std::vector<Node *> GetNodeVec() const;
 
 private:
   NodeTag tag;
@@ -39,4 +40,5 @@ private:
   std::map<std::string, Node *> children;
   std::tuple<int, int> vec2;
   std::tuple<int, int, int> vec3;
+  std::vector<Node *> nodeVec;
 };

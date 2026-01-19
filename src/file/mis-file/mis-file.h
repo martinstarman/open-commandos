@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <tuple>
+#include <vector>
 #include "node.h"
 
 class MisFile
@@ -20,6 +21,8 @@ private:
   std::string ReadString();
   int ReadNumber();
   Node *ReadNode();
+  // TODO: parse as vector of integers
   std::tuple<int, int> ReadVec2();
   std::tuple<int, int, int> ReadVec3();
+  std::vector<Node *> ReadNodeVec();
 };

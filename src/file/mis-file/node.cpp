@@ -9,6 +9,11 @@ Node::~Node()
   {
     delete child;
   }
+
+  for (auto const node : nodeVec)
+  {
+    delete node;
+  }
 }
 
 void Node::SetString(const std::string &value)
@@ -64,4 +69,15 @@ void Node::SetVec3(std::tuple<int, int, int> value)
 std::tuple<int, int, int> Node::GetVec3() const
 {
   return vec3;
+}
+
+void Node::SetNodeVec(std::vector<Node *> value)
+{
+  nodeVec = value;
+  tag = NodeTag::NodeVec;
+}
+
+std::vector<Node *> Node::GetNodeVec() const
+{
+  return nodeVec;
 }
