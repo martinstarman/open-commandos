@@ -60,6 +60,17 @@ std::vector<int> Node::GetIntVec() const
   return intVec;
 }
 
+void Node::SetIntIntVec(std::vector<std::vector<int>> value)
+{
+  intIntVec = value;
+  tag = IntIntVec;
+}
+
+std::vector<std::vector<int>> Node::GetIntIntVec() const
+{
+  return intIntVec;
+}
+
 void Node::SetNodeVec(std::vector<Node *> value)
 {
   nodeVec = value;
