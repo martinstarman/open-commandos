@@ -6,9 +6,6 @@
 #include "mis-file.h"
 #include "node.h"
 
-// temp
-#include <iostream>
-
 MisFile::MisFile(const std::string &path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
@@ -25,32 +22,8 @@ MisFile::~MisFile()
 void MisFile::Parse()
 {
   root = ReadNode();
-
-  std::cout << "OUT  1: " << root->GetChild(".FASE0000")->GetChild(".DATOSFICHEROSMISION")->GetChild(".VOLUMENES")->GetString() << "\n";
-  std::cout << "OUT  2: " << root->GetChild(".FASE0000")->GetChild(".DATOSFICHEROSMISION")->GetChild(".INTROSCRIPT")->GetString() << "\n";
-  std::cout << "OUT  3: " << root->GetChild(".FASE0000")->GetChild(".X")->GetNumber() << "\n";
-  std::cout << "OUT  4: " << root->GetChild(".FASE0000")->GetChild(".TEST")->GetChild(".A")->GetString() << "\n";
-  std::cout << "OUT  5: " << root->GetChild(".FASE0000")->GetChild(".TEST")->GetChild(".B")->GetString() << "\n";
-  std::cout << "OUT  6: " << root->GetChild(".FASE0000")->GetChild(".Y")->GetNumber() << "\n";
-  std::cout << "OUT  7: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".SCALE")->GetNumber() << "\n";
-  std::cout << "OUT  8: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetIntVec().at(0) << "\n";
-  std::cout << "OUT  9:" << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".XY")->GetIntVec().at(1) << "\n";
-  std::cout << "OUT 10: " << root->GetChild(".FASE0000")->GetChild(".MAP")->GetChild(".BITMAP")->GetString() << "\n";
-  std::cout << "OUT 11:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(0) << "\n";
-  std::cout << "OUT 12:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(1) << "\n";
-  std::cout << "OUT 13:" << root->GetChild(".FASE0000")->GetChild(".XYZ")->GetIntVec().at(2) << "\n";
-  std::cout << "OUT 14:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec().at(0)->GetChild(".STR")->GetString() << "\n";
-  std::cout << "OUT 15:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec().at(1)->GetChild(".STR")->GetString() << "\n";
-  std::cout << "OUT 16:" << root->GetChild(".FASE0000")->GetChild(".ARRAY")->GetNodeVec().at(2)->GetChild(".STR")->GetString() << "\n";
-  std::cout << "OUT 17:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(0).at(0) << "\n";
-  std::cout << "OUT 18:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(0).at(1) << "\n";
-  std::cout << "OUT 19:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(0).at(2) << "\n";
-  std::cout << "OUT 20:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(1).at(0) << "\n";
-  std::cout << "OUT 21:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(1).at(1) << "\n";
-  std::cout << "OUT 22:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(1).at(2) << "\n";
-  std::cout << "OUT 23:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(2).at(0) << "\n";
-  std::cout << "OUT 24:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(2).at(1) << "\n";
-  std::cout << "OUT 25:" << root->GetChild(".FASE0000")->GetChild(".EXITPOINTS")->GetIntIntVec().at(2).at(2) << "\n";
+  // TODO: MAPA0004.MIS
+  // TraceLog(LOG_INFO, root->GetChild(".WATER")->GetChild(".BMP")->GetString().c_str());
 }
 
 bool MisFile::IsNumber(char c) const
@@ -58,24 +31,28 @@ bool MisFile::IsNumber(char c) const
   return c == '-' || (c >= '0' && c <= '9');
 }
 
-// TODO: rename. this is specific for array parsing
-int MisFile::Peek()
+bool MisFile::IsString(char c) const
 {
-  int n = 1;
+  return c == '.' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+int MisFile::VecTypePeek()
+{
   misFile.get(); // skip openning '['
   int c = misFile.peek();
+  int offset = 1;
 
   while (isspace(c))
   {
     misFile.get();
     c = misFile.peek();
-    n++;
+    offset++;
   }
 
-  while (n >= 0)
+  while (offset >= 0)
   {
     misFile.unget();
-    n--;
+    offset--;
   }
 
   return c;
@@ -109,7 +86,7 @@ int MisFile::ReadNumber()
 Node *MisFile::ReadNode()
 {
   Node *node = new Node();
-  std::string key = "";
+  std::string key;
 
   while (!misFile.eof())
   {
@@ -119,11 +96,11 @@ Node *MisFile::ReadNode()
     {
       misFile.get();
     }
-    else if (c == '.' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+    else if (IsString(c))
     {
       std::string string = ReadString();
 
-      if (key == "")
+      if (key.empty())
       {
         key = string;
       }
@@ -132,7 +109,7 @@ Node *MisFile::ReadNode()
         Node *child = new Node();
         child->SetString(string);
         node->SetChild(key, child);
-        key = "";
+        key.clear();
       }
     }
     else if (IsNumber(c)) // TODO: handle decimal numbers (.SCALE)
@@ -141,7 +118,7 @@ Node *MisFile::ReadNode()
       Node *child = new Node();
       child->SetNumber(number);
       node->SetChild(key, child);
-      key = "";
+      key.clear();
     }
     else if (c == '[')
     {
@@ -157,7 +134,7 @@ Node *MisFile::ReadNode()
       }
       else if (misFile.peek() == '[')
       {
-        if (IsNumber(Peek()))
+        if (IsNumber(VecTypePeek()))
         {
           std::vector<std::vector<int>> intIntVec = ReadIntIntVec();
           Node *child = new Node();
@@ -177,7 +154,7 @@ Node *MisFile::ReadNode()
         node->SetChild(key, ReadNode());
       }
 
-      key = "";
+      key.clear();
     }
     else if (c == ']')
     {
@@ -186,7 +163,7 @@ Node *MisFile::ReadNode()
     }
     else
     {
-      std::cout << "Unknown character: " << misFile.get() << "\n";
+      TraceLog(LOG_WARNING, "Unknown character: " + c);
     }
   }
 
@@ -240,7 +217,8 @@ std::vector<Node *> MisFile::ReadNodeVec()
 {
   std::vector<Node *> nodeVec;
 
-  while (misFile.peek() != ']')
+  // TODO: remove eof
+  while (misFile.peek() != ']' && !misFile.eof())
   {
     if (misFile.peek() == '[')
     {

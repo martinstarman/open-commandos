@@ -16,7 +16,8 @@ private:
   std::ifstream misFile;
   Node *root;
   bool IsNumber(char c) const;
-  int Peek();
+  bool IsString(char c) const;
+  int VecTypePeek();
   void ReadSpaces();
   std::string ReadString();
   int ReadNumber();
