@@ -15,14 +15,17 @@ public:
 private:
   std::ifstream misFile;
   Node *root;
-  bool IsNumber(char c) const;
-  bool IsString(char c) const;
-  int VecTypePeek();
-  void ReadSpaces();
-  std::string ReadString();
-  int ReadNumber();
+  bool IsOpeningBracket(int c) const;
+  bool IsString(int c) const;
+  bool IsNumber(int c) const;
+  int ReadWhiteSpaces();
+  std::string ReadKeyword();
+  Node *ReadValue();
   Node *ReadNode();
-  std::vector<int> ReadIntVec();
-  std::vector<std::vector<int>> ReadIntIntVec();
-  std::vector<Node *> ReadNodeVec();
+  std::string ReadString();
+  double ReadNumber();
+  std::vector<double> ReadListOfNumbers();
+  std::vector<std::vector<double>> ReadListOfNumberLists();
+  std::vector<Node *> ReadNodeList();
+  void ReadClosingBracket();
 };

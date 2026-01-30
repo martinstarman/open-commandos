@@ -6,10 +6,9 @@
 #include "mis-file.h"
 #include "node.h"
 
-MisFile::MisFile(const std::string &path)
+MisFile::MisFile(const std::string &path) : misFile(path), root(new Node())
 {
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
-  misFile.open(path, std::ifstream::in);
 }
 
 MisFile::~MisFile()
@@ -21,53 +20,147 @@ MisFile::~MisFile()
 
 void MisFile::Parse()
 {
-  root = ReadNode();
-  // TODO: MAPA0004.MIS
-  // TraceLog(LOG_INFO, root->GetChild(".WATER")->GetChild(".BMP")->GetString().c_str());
+  std::string keyword = ReadKeyword();
+  Node *value = ReadValue();
+  root->SetNode(keyword, value);
+
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".SECTORES")->GetString().c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".SCALE")->GetNumber()).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".WATER")->GetNode(".ANGINC")->GetNumber()).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(2)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(2)).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetNodeList().at(0)->GetNode(".NAME")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetNodeList().at(1)->GetNode(".NAME")->GetString().c_str());
 }
 
-bool MisFile::IsNumber(char c) const
+bool MisFile::IsOpeningBracket(int c) const
+{
+  return c == '[';
+}
+
+bool MisFile::IsString(int c) const
+{
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+bool MisFile::IsNumber(int c) const
 {
   return c == '-' || (c >= '0' && c <= '9');
 }
 
-bool MisFile::IsString(char c) const
+int MisFile::ReadWhiteSpaces()
 {
-  return c == '.' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
+  int i = 0;
 
-int MisFile::VecTypePeek()
-{
-  misFile.get(); // skip openning '['
-  int c = misFile.peek();
-  int offset = 1;
-
-  while (isspace(c))
-  {
-    misFile.get();
-    c = misFile.peek();
-    offset++;
-  }
-
-  while (offset >= 0)
-  {
-    misFile.unget();
-    offset--;
-  }
-
-  return c;
-}
-
-void MisFile::ReadSpaces()
-{
   while (isspace(misFile.peek()))
   {
+    i++;
     misFile.get();
   }
+
+  return i;
+}
+
+std::string MisFile::ReadKeyword()
+{
+  ReadWhiteSpaces();
+  std::string keyword;
+
+  while (!isspace(misFile.peek()))
+  {
+    keyword.push_back(misFile.get());
+  }
+
+  ReadWhiteSpaces();
+  return keyword;
+}
+
+Node *MisFile::ReadValue()
+{
+  ReadWhiteSpaces();
+  Node *node;
+  int c = misFile.peek();
+
+  if (IsOpeningBracket(c))
+  {
+    misFile.get();
+    ReadWhiteSpaces();
+    c = misFile.peek();
+
+    if (IsNumber(c))
+    {
+      node = new Node();
+      node->SetListOfNumbers(ReadListOfNumbers());
+    }
+    else if (IsOpeningBracket(c))
+    {
+      misFile.get();
+      int whitespaces = ReadWhiteSpaces();
+      int c = misFile.peek();
+
+      for (int i = 0; i < whitespaces + 1; i++)
+      {
+        misFile.unget();
+      }
+
+      if (IsNumber(c))
+      {
+        node = new Node();
+        node->SetListOfNumberLists(ReadListOfNumberLists());
+      }
+      else
+      {
+        node = new Node();
+        node->SetNodeList(ReadNodeList());
+      }
+    }
+    else
+    {
+      node = ReadNode();
+    }
+  }
+  else if (IsNumber(c))
+  {
+    node = new Node();
+    node->SetNumber(ReadNumber());
+  }
+  else if (IsString(c))
+  {
+    node = new Node();
+    node->SetString(ReadString());
+  }
+
+  ReadWhiteSpaces();
+  return node;
+}
+
+Node *MisFile::ReadNode()
+{
+  ReadWhiteSpaces();
+  Node *node = new Node();
+
+  while (misFile.peek() != ']')
+  {
+    std::string keyword = ReadKeyword();
+    Node *value = ReadValue();
+    node->SetNode(keyword, value);
+  }
+
+  ReadClosingBracket();
+  ReadWhiteSpaces();
+  return node;
 }
 
 std::string MisFile::ReadString()
 {
+  ReadWhiteSpaces();
   std::string string;
 
   while (!isspace(misFile.peek()))
@@ -75,163 +168,84 @@ std::string MisFile::ReadString()
     string.push_back(misFile.get());
   }
 
+  ReadWhiteSpaces();
   return string;
 }
 
-int MisFile::ReadNumber()
+double MisFile::ReadNumber()
 {
-  return atoi(ReadString().c_str());
+  std::string string = ReadString();
+  return atof(string.c_str());
 }
 
-Node *MisFile::ReadNode()
+std::vector<double> MisFile::ReadListOfNumbers()
 {
-  Node *node = new Node();
-  std::string key;
-
-  while (!misFile.eof())
-  {
-    char c = misFile.peek();
-
-    if (isspace(c) || c == EOF)
-    {
-      misFile.get();
-    }
-    else if (IsString(c))
-    {
-      std::string string = ReadString();
-
-      if (key.empty())
-      {
-        key = string;
-      }
-      else
-      {
-        Node *child = new Node();
-        child->SetString(string);
-        node->SetChild(key, child);
-        key.clear();
-      }
-    }
-    else if (IsNumber(c)) // TODO: handle decimal numbers (.SCALE)
-    {
-      int number = ReadNumber();
-      Node *child = new Node();
-      child->SetNumber(number);
-      node->SetChild(key, child);
-      key.clear();
-    }
-    else if (c == '[')
-    {
-      misFile.get();
-      ReadSpaces();
-
-      if (IsNumber(misFile.peek()))
-      {
-        std::vector<int> intVec = ReadIntVec();
-        Node *child = new Node();
-        child->SetIntVec(intVec);
-        node->SetChild(key, child);
-      }
-      else if (misFile.peek() == '[')
-      {
-        if (IsNumber(VecTypePeek()))
-        {
-          std::vector<std::vector<int>> intIntVec = ReadIntIntVec();
-          Node *child = new Node();
-          child->SetIntIntVec(intIntVec);
-          node->SetChild(key, child);
-        }
-        else
-        {
-          std::vector<Node *> nodeVec = ReadNodeVec();
-          Node *child = new Node();
-          child->SetNodeVec(nodeVec);
-          node->SetChild(key, child);
-        }
-      }
-      else
-      {
-        node->SetChild(key, ReadNode());
-      }
-
-      key.clear();
-    }
-    else if (c == ']')
-    {
-      misFile.get();
-      break;
-    }
-    else
-    {
-      TraceLog(LOG_WARNING, "Unknown character: " + c);
-    }
-  }
-
-  return node;
-}
-
-std::vector<int> MisFile::ReadIntVec()
-{
-  std::vector<int> intVec;
+  ReadWhiteSpaces();
+  std::vector<double> listOfNumbers;
 
   while (misFile.peek() != ']')
   {
-    if (isspace(misFile.peek()))
-    {
-      misFile.get();
-    }
-    else
-    {
-      intVec.push_back(ReadNumber());
-    }
+    ReadWhiteSpaces();
+    listOfNumbers.push_back(ReadNumber());
+    ReadWhiteSpaces();
   }
 
-  misFile.get(); // consume ']'
-
-  return intVec;
+  ReadClosingBracket();
+  ReadWhiteSpaces();
+  return listOfNumbers;
 }
 
-std::vector<std::vector<int>> MisFile::ReadIntIntVec()
+std::vector<std::vector<double>> MisFile::ReadListOfNumberLists()
 {
-  std::vector<std::vector<int>> intIntVec;
+  ReadWhiteSpaces();
+  std::vector<std::vector<double>> listOfNumberLists;
 
   while (misFile.peek() != ']')
   {
+    ReadWhiteSpaces();
+
     if (misFile.peek() == '[')
     {
       misFile.get();
-      intIntVec.push_back(ReadIntVec());
+      ReadWhiteSpaces();
+      listOfNumberLists.push_back(ReadListOfNumbers());
+      ReadWhiteSpaces();
     }
-    else
-    {
-      misFile.get();
-    }
+
+    ReadWhiteSpaces();
   }
 
-  misFile.get(); // consume ']'
-
-  return intIntVec;
+  ReadClosingBracket();
+  ReadWhiteSpaces();
+  return listOfNumberLists;
 }
 
-std::vector<Node *> MisFile::ReadNodeVec()
+std::vector<Node *> MisFile::ReadNodeList()
 {
-  std::vector<Node *> nodeVec;
+  ReadWhiteSpaces();
+  std::vector<Node *> listOfNodes;
 
-  // TODO: remove eof
-  while (misFile.peek() != ']' && !misFile.eof())
+  while (misFile.peek() != ']')
   {
+    ReadWhiteSpaces();
+
     if (misFile.peek() == '[')
     {
       misFile.get();
-      nodeVec.push_back(ReadNode());
+      ReadWhiteSpaces();
+      listOfNodes.push_back(ReadNode());
+      ReadWhiteSpaces();
     }
-    else
-    {
-      misFile.get();
-    }
+
+    ReadWhiteSpaces();
   }
 
-  misFile.get(); // consume ']'
+  ReadClosingBracket();
+  ReadWhiteSpaces();
+  return listOfNodes;
+}
 
-  return nodeVec;
+void MisFile::ReadClosingBracket()
+{
+  misFile.get();
 }

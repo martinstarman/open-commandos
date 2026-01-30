@@ -10,7 +10,7 @@ Node::~Node()
     delete child;
   }
 
-  for (auto const node : nodeVec)
+  for (auto const node : listOfNodes)
   {
     delete node;
   }
@@ -27,57 +27,57 @@ const std::string &Node::GetString() const
   return string;
 }
 
-void Node::SetNumber(int value)
+void Node::SetNumber(double value)
 {
   number = value;
   tag = NodeTag::Number;
 }
 
-int Node::GetNumber() const
+double Node::GetNumber() const
 {
   return number;
 }
 
-void Node::SetChild(const std::string &key, Node *value)
+void Node::SetNode(const std::string &key, Node *value)
 {
   children.emplace(key, value);
   tag = NodeTag::Child;
 }
 
-Node *Node::GetChild(const std::string &key) const
+Node *Node::GetNode(const std::string &key) const
 {
   return children.at(key);
 }
 
-void Node::SetIntVec(std::vector<int> value)
+void Node::SetListOfNumbers(std::vector<double> value)
 {
-  intVec = value;
-  tag = NodeTag::IntVec;
+  listOfNumbers = value;
+  tag = NodeTag::ListOfNumbers;
 }
 
-std::vector<int> Node::GetIntVec() const
+std::vector<double> Node::GetListOfNumbers() const
 {
-  return intVec;
+  return listOfNumbers;
 }
 
-void Node::SetIntIntVec(std::vector<std::vector<int>> value)
+void Node::SetListOfNumberLists(std::vector<std::vector<double>> value)
 {
-  intIntVec = value;
-  tag = IntIntVec;
+  listOfNumberLists = value;
+  tag = ListOfNumberLists;
 }
 
-std::vector<std::vector<int>> Node::GetIntIntVec() const
+std::vector<std::vector<double>> Node::GetListOfNumberLists() const
 {
-  return intIntVec;
+  return listOfNumberLists;
 }
 
-void Node::SetNodeVec(std::vector<Node *> value)
+void Node::SetNodeList(std::vector<Node *> value)
 {
-  nodeVec = value;
-  tag = NodeTag::NodeVec;
+  listOfNodes = value;
+  tag = NodeTag::ListOfNodes;
 }
 
-std::vector<Node *> Node::GetNodeVec() const
+std::vector<Node *> Node::GetNodeList() const
 {
-  return nodeVec;
+  return listOfNodes;
 }

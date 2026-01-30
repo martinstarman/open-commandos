@@ -9,9 +9,9 @@ enum NodeTag
   String,
   Number,
   Child,
-  IntVec,
-  IntIntVec,
-  NodeVec,
+  ListOfNumbers,
+  ListOfNumberLists,
+  ListOfNodes,
 };
 
 class Node
@@ -21,23 +21,23 @@ public:
   ~Node();
   void SetString(const std::string &value);
   const std::string &GetString() const;
-  void SetNumber(int value);
-  int GetNumber() const;
-  void SetChild(const std::string &key, Node *value);
-  Node *GetChild(const std::string &key) const;
-  void SetIntVec(std::vector<int> value);
-  std::vector<int> GetIntVec() const;
-  void SetIntIntVec(std::vector<std::vector<int>> value);
-  std::vector<std::vector<int>> GetIntIntVec() const;
-  void SetNodeVec(std::vector<Node *> value);
-  std::vector<Node *> GetNodeVec() const;
+  void SetNumber(double value);
+  double GetNumber() const;
+  void SetNode(const std::string &key, Node *value);
+  Node *GetNode(const std::string &key) const;
+  void SetListOfNumbers(std::vector<double> value);
+  std::vector<double> GetListOfNumbers() const;
+  void SetListOfNumberLists(std::vector<std::vector<double>> value);
+  std::vector<std::vector<double>> GetListOfNumberLists() const;
+  void SetNodeList(std::vector<Node *> value);
+  std::vector<Node *> GetNodeList() const;
 
 private:
   NodeTag tag;
   std::string string;
   int number;
   std::map<std::string, Node *> children;
-  std::vector<int> intVec;
-  std::vector<std::vector<int>> intIntVec;
-  std::vector<Node *> nodeVec;
+  std::vector<double> listOfNumbers;
+  std::vector<std::vector<double>> listOfNumberLists;
+  std::vector<Node *> listOfNodes;
 };
