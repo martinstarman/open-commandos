@@ -71,13 +71,13 @@ std::vector<std::vector<double>> Node::GetListOfNumberLists() const
   return listOfNumberLists;
 }
 
-void Node::SetNodeList(std::vector<Node *> value)
+void Node::SetListOfNodes(std::vector<Node *> value)
 {
   listOfNodes = value;
   tag = NodeTag::ListOfNodes;
 }
 
-std::vector<Node *> Node::GetNodeList() const
+std::vector<Node *> Node::GetListOfNodes() const
 {
   return listOfNodes;
 }
@@ -91,4 +91,15 @@ void Node::SetAbility(const std::string &key, Node *value)
 Node *Node::GetAbility(const std::string &key) const
 {
   return children.at(key);
+}
+
+void Node::SetListOfAbilities(std::vector<std::string> value)
+{
+  listOfAbilities = value;
+  tag = NodeTag::ListOfAbilities;
+}
+
+std::vector<std::string> Node::GetListOfAbilities() const
+{
+  return listOfAbilities;
 }

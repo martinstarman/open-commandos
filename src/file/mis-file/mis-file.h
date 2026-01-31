@@ -28,5 +28,6 @@ private:
   std::vector<std::vector<double>> ReadListOfNumberLists();
   std::vector<Node *> ReadNodeList();
   Node *ReadAbility();
+  std::vector<std::string> ReadListOfAbilities();
   void ReadClosingBracket();
 };

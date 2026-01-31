@@ -24,22 +24,30 @@ void MisFile::Parse()
   Node *value = ReadValue();
   root->SetNode(keyword, value);
 
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString().c_str());
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".SECTORES")->GetString().c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".SCALE")->GetNumber()).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(0)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(1)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".WATER")->GetNode(".ANGINC")->GetNumber()).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(0)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(1)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(2)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(0)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(1)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(2)).c_str());
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetNodeList().at(0)->GetNode(".NAME")->GetString().c_str());
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetNodeList().at(1)->GetNode(".NAME")->GetString().c_str());
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetNodeList().at(0)->GetAbility("acMuerte")->GetNode(".CARISMA")->GetString().c_str());
-  TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetNodeList().at(1)->GetAbility("acUsaHab")->GetNode(".CARISMA")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".SECTORES")->GetString().c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".SCALE")->GetNumber()).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".WATER")->GetNode(".ANGINC")->GetNumber()).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(2)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(0)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(1)).c_str());
+  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(2)).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetListOfNodes().at(0)->GetNode(".NAME")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetListOfNodes().at(1)->GetNode(".NAME")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetListOfNodes().at(0)->GetAbility("acMuerte")->GetNode(".CARISMA")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetListOfNodes().at(1)->GetAbility("acUsaHab")->GetNode(".CARISMA")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(0).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(1).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(2).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(3).c_str());
+  //
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(0)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(1)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(2)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
 }
 
 bool MisFile::IsOpeningBracket(int c) const
@@ -120,12 +128,30 @@ Node *MisFile::ReadValue()
       else
       {
         node = new Node();
-        node->SetNodeList(ReadNodeList());
+        node->SetListOfNodes(ReadNodeList());
       }
     }
     else if (IsString(c))
     {
-      node = ReadAbility();
+      misFile.get();
+      std::string ability = ReadString();
+      int whitespaces = ReadWhiteSpaces();
+      int c = misFile.peek();
+
+      for (int i = 0; i < ability.size() + whitespaces + 1; i++)
+      {
+        misFile.unget();
+      }
+
+      if (IsOpeningBracket(c))
+      {
+        node = ReadAbility();
+      }
+      else
+      {
+        node = new Node();
+        node->SetListOfAbilities(ReadListOfAbilities());
+      }
     }
     else
     {
@@ -271,4 +297,21 @@ Node *MisFile::ReadAbility()
   ReadClosingBracket();
   ReadWhiteSpaces();
   return node;
+}
+
+std::vector<std::string> MisFile::ReadListOfAbilities()
+{
+  ReadWhiteSpaces();
+  std::vector<std::string> listOfAbilities;
+
+  while (misFile.peek() != ']')
+  {
+    ReadWhiteSpaces();
+    listOfAbilities.push_back(ReadString());
+    ReadWhiteSpaces();
+  }
+
+  ReadClosingBracket();
+  ReadWhiteSpaces();
+  return listOfAbilities;
 }
