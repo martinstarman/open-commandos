@@ -12,6 +12,7 @@ enum NodeTag
   ListOfNumbers,
   ListOfNumberLists,
   ListOfNodes,
+  Ability,
 };
 
 class Node
@@ -31,6 +32,8 @@ public:
   std::vector<std::vector<double>> GetListOfNumberLists() const;
   void SetNodeList(std::vector<Node *> value);
   std::vector<Node *> GetNodeList() const;
+  void SetAbility(const std::string &key, Node *value);
+  Node *GetAbility(const std::string &key) const;
 
 private:
   NodeTag tag;

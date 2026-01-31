@@ -81,3 +81,14 @@ std::vector<Node *> Node::GetNodeList() const
 {
   return listOfNodes;
 }
+
+void Node::SetAbility(const std::string &key, Node *value)
+{
+  children.emplace(key, value);
+  tag = NodeTag::Ability;
+}
+
+Node *Node::GetAbility(const std::string &key) const
+{
+  return children.at(key);
+}
