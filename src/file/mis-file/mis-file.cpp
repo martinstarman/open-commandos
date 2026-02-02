@@ -44,6 +44,8 @@ void MisFile::Parse()
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(1).c_str());
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(2).c_str());
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(3).c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ITWORKS")->GetAbility("ABCDA")->GetNode(".X")->GetString().c_str());
+  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DOESNOTWORK")->GetAbility("ABCDB")->GetNode(".X")->GetString().c_str());
   //
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(0)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(1)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
@@ -128,27 +130,28 @@ Node *MisFile::ReadValue()
       else
       {
         node = new Node();
-        node->SetListOfNodes(ReadNodeList());
+        node->SetListOfNodes(ReadListOfNodes());
       }
     }
     else if (IsString(c))
     {
-      misFile.get();
-      std::string ability = ReadString();
+      std::string abilityName = ReadString();
       int whitespaces = ReadWhiteSpaces();
       int c = misFile.peek();
 
-      for (int i = 0; i < ability.size() + whitespaces + 1; i++)
-      {
-        misFile.unget();
-      }
-
       if (IsOpeningBracket(c))
       {
-        node = ReadAbility();
+        misFile.get();
+        node = new Node();
+        node->SetAbility(abilityName, ReadAbility());
       }
       else
       {
+        for (int i = 0; i < abilityName.size() + whitespaces; i++)
+        {
+          misFile.unget();
+        }
+
         node = new Node();
         node->SetListOfAbilities(ReadListOfAbilities());
       }
@@ -186,7 +189,6 @@ Node *MisFile::ReadNode()
   }
 
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return node;
 }
 
@@ -200,7 +202,6 @@ std::string MisFile::ReadString()
     string.push_back(misFile.get());
   }
 
-  ReadWhiteSpaces();
   return string;
 }
 
@@ -223,7 +224,6 @@ std::vector<double> MisFile::ReadListOfNumbers()
   }
 
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return listOfNumbers;
 }
 
@@ -248,15 +248,13 @@ std::vector<std::vector<double>> MisFile::ReadListOfNumberLists()
   }
 
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return listOfNumberLists;
 }
 
-std::vector<Node *> MisFile::ReadNodeList()
+std::vector<Node *> MisFile::ReadListOfNodes()
 {
   ReadWhiteSpaces();
   std::vector<Node *> listOfNodes;
-
   while (misFile.peek() != ']')
   {
     ReadWhiteSpaces();
@@ -264,38 +262,25 @@ std::vector<Node *> MisFile::ReadNodeList()
     if (misFile.peek() == '[')
     {
       misFile.get();
-      ReadWhiteSpaces();
       listOfNodes.push_back(ReadNode());
-      ReadWhiteSpaces();
     }
-
-    ReadWhiteSpaces();
   }
 
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return listOfNodes;
 }
 
 void MisFile::ReadClosingBracket()
 {
+  ReadWhiteSpaces();
   misFile.get();
 }
 
 Node *MisFile::ReadAbility()
 {
   ReadWhiteSpaces();
-  Node *node = new Node();
-
-  while (misFile.peek() != ']')
-  {
-    std::string ability = ReadString();
-    Node *value = ReadValue();
-    node->SetAbility(ability, value);
-  }
-
+  Node *node = ReadNode();
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return node;
 }
 
@@ -312,6 +297,5 @@ std::vector<std::string> MisFile::ReadListOfAbilities()
   }
 
   ReadClosingBracket();
-  ReadWhiteSpaces();
   return listOfAbilities;
 }
