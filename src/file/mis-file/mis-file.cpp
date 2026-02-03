@@ -6,8 +6,14 @@
 #include "mis-file.h"
 #include "node.h"
 
-MisFile::MisFile(const std::string &path) : misFile(path), root(new Node())
+MisFile::MisFile(const std::string &path) : misFile(path), root(new Node()), pointer(-1)
 {
+  misFile.seekg(0, std::ios_base::end);
+  std::streampos fileSize = misFile.tellg();
+  buffer.resize(fileSize);
+  misFile.seekg(0, std::ios_base::beg);
+  misFile.read(&buffer[0], fileSize);
+
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
 }
 
@@ -16,6 +22,21 @@ MisFile::~MisFile()
   TraceLog(LOG_INFO, "    > Done, closing .mis file");
   misFile.close();
   delete root;
+}
+
+int MisFile::Peek()
+{
+  return buffer.at(pointer + 1);
+}
+
+int MisFile::Get()
+{
+  return buffer.at(++pointer);
+}
+
+void MisFile::Unget()
+{
+  pointer--;
 }
 
 void MisFile::Parse()
@@ -52,17 +73,17 @@ void MisFile::Parse()
   // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(2)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
 }
 
-bool MisFile::IsOpeningBracket(int c) const
+bool MisFile::IsOpeningBracket(char c) const
 {
   return c == '[';
 }
 
-bool MisFile::IsString(int c) const
+bool MisFile::IsString(char c) const
 {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-bool MisFile::IsNumber(int c) const
+bool MisFile::IsNumber(char c) const
 {
   return c == '-' || (c >= '0' && c <= '9');
 }
@@ -71,10 +92,10 @@ int MisFile::ReadWhiteSpaces()
 {
   int i = 0;
 
-  while (isspace(misFile.peek()))
+  while (isspace(Peek()))
   {
     i++;
-    misFile.get();
+    Get();
   }
 
   return i;
@@ -85,9 +106,9 @@ std::string MisFile::ReadKeyword()
   ReadWhiteSpaces();
   std::string keyword;
 
-  while (!isspace(misFile.peek()))
+  while (!isspace(Peek()))
   {
-    keyword.push_back(misFile.get());
+    keyword.push_back(Get());
   }
 
   ReadWhiteSpaces();
@@ -98,13 +119,13 @@ Node *MisFile::ReadValue()
 {
   ReadWhiteSpaces();
   Node *node;
-  int c = misFile.peek();
+  char c = Peek();
 
   if (IsOpeningBracket(c))
   {
-    misFile.get();
+    Get();
     ReadWhiteSpaces();
-    c = misFile.peek();
+    c = Peek();
 
     if (IsNumber(c))
     {
@@ -113,13 +134,13 @@ Node *MisFile::ReadValue()
     }
     else if (IsOpeningBracket(c))
     {
-      misFile.get();
+      Get();
       int whitespaces = ReadWhiteSpaces();
-      int c = misFile.peek();
+      char c = Peek();
 
       for (int i = 0; i < whitespaces + 1; i++)
       {
-        misFile.unget();
+        Unget();
       }
 
       if (IsNumber(c))
@@ -137,11 +158,11 @@ Node *MisFile::ReadValue()
     {
       std::string abilityName = ReadString();
       int whitespaces = ReadWhiteSpaces();
-      int c = misFile.peek();
+      char c = Peek();
 
       if (IsOpeningBracket(c))
       {
-        misFile.get();
+        Get();
         node = new Node();
         node->SetAbility(abilityName, ReadAbility());
       }
@@ -149,7 +170,7 @@ Node *MisFile::ReadValue()
       {
         for (int i = 0; i < abilityName.size() + whitespaces; i++)
         {
-          misFile.unget();
+          Unget();
         }
 
         node = new Node();
@@ -181,11 +202,20 @@ Node *MisFile::ReadNode()
   ReadWhiteSpaces();
   Node *node = new Node();
 
-  while (misFile.peek() != ']')
+  while (Peek() != ']')
   {
-    std::string keyword = ReadKeyword();
-    Node *value = ReadValue();
-    node->SetNode(keyword, value);
+    if (IsString(Peek()))
+    {
+      std::string ability = ReadString();
+      Node *value = ReadValue();
+      node->SetAbility(ability, value);
+    }
+    else
+    {
+      std::string keyword = ReadKeyword();
+      Node *value = ReadValue();
+      node->SetNode(keyword, value);
+    }
   }
 
   ReadClosingBracket();
@@ -197,9 +227,9 @@ std::string MisFile::ReadString()
   ReadWhiteSpaces();
   std::string string;
 
-  while (!isspace(misFile.peek()))
+  while (!isspace(Peek()))
   {
-    string.push_back(misFile.get());
+    string.push_back(Get());
   }
 
   return string;
@@ -216,7 +246,7 @@ std::vector<double> MisFile::ReadListOfNumbers()
   ReadWhiteSpaces();
   std::vector<double> listOfNumbers;
 
-  while (misFile.peek() != ']')
+  while (Peek() != ']')
   {
     ReadWhiteSpaces();
     listOfNumbers.push_back(ReadNumber());
@@ -232,13 +262,13 @@ std::vector<std::vector<double>> MisFile::ReadListOfNumberLists()
   ReadWhiteSpaces();
   std::vector<std::vector<double>> listOfNumberLists;
 
-  while (misFile.peek() != ']')
+  while (Peek() != ']')
   {
     ReadWhiteSpaces();
 
-    if (misFile.peek() == '[')
+    if (Peek() == '[')
     {
-      misFile.get();
+      Get();
       ReadWhiteSpaces();
       listOfNumberLists.push_back(ReadListOfNumbers());
       ReadWhiteSpaces();
@@ -255,13 +285,13 @@ std::vector<Node *> MisFile::ReadListOfNodes()
 {
   ReadWhiteSpaces();
   std::vector<Node *> listOfNodes;
-  while (misFile.peek() != ']')
+  while (Peek() != ']')
   {
     ReadWhiteSpaces();
 
-    if (misFile.peek() == '[')
+    if (Peek() == '[')
     {
-      misFile.get();
+      Get();
       listOfNodes.push_back(ReadNode());
     }
   }
@@ -273,7 +303,7 @@ std::vector<Node *> MisFile::ReadListOfNodes()
 void MisFile::ReadClosingBracket()
 {
   ReadWhiteSpaces();
-  misFile.get();
+  Get();
 }
 
 Node *MisFile::ReadAbility()
@@ -289,7 +319,7 @@ std::vector<std::string> MisFile::ReadListOfAbilities()
   ReadWhiteSpaces();
   std::vector<std::string> listOfAbilities;
 
-  while (misFile.peek() != ']')
+  while (Peek() != ']')
   {
     ReadWhiteSpaces();
     listOfAbilities.push_back(ReadString());

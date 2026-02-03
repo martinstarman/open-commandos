@@ -14,10 +14,15 @@ public:
 
 private:
   std::ifstream misFile;
+  std::vector<char> buffer;
+  int pointer;
+  int Peek();
+  int Get();
+  void Unget();
   Node *root;
-  bool IsOpeningBracket(int c) const;
-  bool IsString(int c) const;
-  bool IsNumber(int c) const;
+  bool IsOpeningBracket(char c) const;
+  bool IsString(char c) const;
+  bool IsNumber(char c) const;
   int ReadWhiteSpaces();
   std::string ReadKeyword();
   Node *ReadValue();
