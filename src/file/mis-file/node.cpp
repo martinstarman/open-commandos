@@ -1,3 +1,4 @@
+#include <cassert>
 #include <string>
 #include "node.h"
 
@@ -46,6 +47,7 @@ void Node::SetNode(const std::string &key, Node *value)
 
 Node *Node::GetNode(const std::string &key) const
 {
+  assert(tag == NodeTag::Child);
   return children.at(key);
 }
 
@@ -90,6 +92,7 @@ void Node::SetAbility(const std::string &key, Node *value)
 
 Node *Node::GetAbility(const std::string &key) const
 {
+  assert(tag == NodeTag::Ability);
   return children.at(key);
 }
 

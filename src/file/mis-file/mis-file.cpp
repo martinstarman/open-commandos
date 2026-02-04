@@ -24,12 +24,12 @@ MisFile::~MisFile()
   delete root;
 }
 
-int MisFile::Peek()
+char MisFile::Peek()
 {
   return buffer.at(pointer + 1);
 }
 
-int MisFile::Get()
+char MisFile::Get()
 {
   return buffer.at(++pointer);
 }
@@ -44,33 +44,6 @@ void MisFile::Parse()
   std::string keyword = ReadKeyword();
   Node *value = ReadValue();
   root->SetNode(keyword, value);
-
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".VOLUMENES")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DATOSFICHEROSMISION")->GetNode(".SECTORES")->GetString().c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".SCALE")->GetNumber()).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(0)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".MAP")->GetNode(".XY")->GetListOfNumbers().at(1)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".WATER")->GetNode(".ANGINC")->GetNumber()).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(0)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(1)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(0).at(2)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(0)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(1)).c_str());
-  // TraceLog(LOG_INFO, std::to_string(root->GetNode(".FASE0000")->GetNode(".EXITPOINTS")->GetListOfNumberLists().at(1).at(2)).c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetListOfNodes().at(0)->GetNode(".NAME")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".PATRULLAS")->GetListOfNodes().at(1)->GetNode(".NAME")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetListOfNodes().at(0)->GetAbility("acMuerte")->GetNode(".CARISMA")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ACCIONES")->GetListOfNodes().at(1)->GetAbility("acUsaHab")->GetNode(".CARISMA")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(0).c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(1).c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(2).c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".LISTAS")->GetListOfAbilities().at(3).c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".ITWORKS")->GetAbility("ABCDA")->GetNode(".X")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".DOESNOTWORK")->GetAbility("ABCDB")->GetNode(".X")->GetString().c_str());
-  //
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(0)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(1)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
-  // TraceLog(LOG_INFO, root->GetNode(".FASE0000")->GetNode(".INTERFACE")->GetNode(".INFOCARAS")->GetListOfNodes().at(2)->GetAbility("CARA")->GetNode(".TOKEN")->GetString().c_str());
 }
 
 bool MisFile::IsOpeningBracket(char c) const
@@ -80,7 +53,9 @@ bool MisFile::IsOpeningBracket(char c) const
 
 bool MisFile::IsString(char c) const
 {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  return (c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
+         (c == '*'); // MAPA0012.MIS
 }
 
 bool MisFile::IsNumber(char c) const
@@ -192,6 +167,10 @@ Node *MisFile::ReadValue()
     node = new Node();
     node->SetString(ReadString());
   }
+  else
+  {
+    TraceLog(LOG_INFO, ("    > Unknown character " + std::to_string(c)).c_str());
+  }
 
   ReadWhiteSpaces();
   return node;
@@ -204,7 +183,12 @@ Node *MisFile::ReadNode()
 
   while (Peek() != ']')
   {
-    if (IsString(Peek()))
+    if (IsOpeningBracket(Peek()))
+    {
+      ReadUntil(']');
+      ReadWhiteSpaces();
+    }
+    else if (IsString(Peek()))
     {
       std::string ability = ReadString();
       Node *value = ReadValue();
@@ -328,4 +312,16 @@ std::vector<std::string> MisFile::ReadListOfAbilities()
 
   ReadClosingBracket();
   return listOfAbilities;
+}
+
+// TODO: MAPA0009.MIS, MAPA0012.MIS, MAPA0018.MIS
+//       [ .ANGBARRIDO 60 .DEMORA 50 ] [ .ANGBARRIDO 60 .DEMORA 50 ]
+void MisFile::ReadUntil(char c)
+{
+  while (Peek() != c)
+  {
+    Get();
+  }
+
+  ReadClosingBracket();
 }

@@ -16,8 +16,8 @@ private:
   std::ifstream misFile;
   std::vector<char> buffer;
   int pointer;
-  int Peek();
-  int Get();
+  char Peek();
+  char Get();
   void Unget();
   Node *root;
   bool IsOpeningBracket(char c) const;
@@ -35,4 +35,5 @@ private:
   Node *ReadAbility();
   std::vector<std::string> ReadListOfAbilities();
   void ReadClosingBracket();
+  void ReadUntil(char c);
 };
