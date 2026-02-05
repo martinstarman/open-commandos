@@ -9,7 +9,7 @@
 
 DirFile::DirFile(std::string path)
 {
-  TraceLog(LOG_INFO, ("UTILS: Opening .dir file " + path).c_str());
+  TraceLog(LOG_INFO, ("FILE: Opening .dir file " + path).c_str());
   dirFile.open(path, std::ifstream::binary);
 }
 

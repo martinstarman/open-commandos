@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "file/dir-file.h"
+#include "file/mis-file/mis-file.h"
 #include "file/wad-file.h"
 
 std::vector<std::string> dirFilePaths = {
@@ -235,6 +236,36 @@ std::vector<std::string> wadFilePaths = {
     "DATOS/RECURSOS/ELEM/ZODIAC2.WAD",
 };
 
+std::vector<std::string> misFilePaths = {
+    "DATOS/MISIONES/MAPA0000.MIS",
+    "DATOS/MISIONES/MAPA0001.MIS",
+    "DATOS/MISIONES/MAPA0002.MIS",
+    "DATOS/MISIONES/MAPA0003.MIS",
+    "DATOS/MISIONES/MAPA0004.MIS",
+    "DATOS/MISIONES/MAPA0005.MIS",
+    "DATOS/MISIONES/MAPA0006.MIS",
+    "DATOS/MISIONES/MAPA0007.MIS",
+    "DATOS/MISIONES/MAPA0008.MIS",
+    "DATOS/MISIONES/MAPA0009.MIS",
+    "DATOS/MISIONES/MAPA0010.MIS",
+    "DATOS/MISIONES/MAPA0011.MIS",
+    "DATOS/MISIONES/MAPA0012.MIS",
+    "DATOS/MISIONES/MAPA0013.MIS",
+    "DATOS/MISIONES/MAPA0014.MIS",
+    "DATOS/MISIONES/MAPA0015.MIS",
+    "DATOS/MISIONES/MAPA0016.MIS",
+    "DATOS/MISIONES/MAPA0017.MIS",
+    "DATOS/MISIONES/MAPA0018.MIS",
+    "DATOS/MISIONES/MAPA0019.MIS",
+    "DATOS/MISIONES/MAPA0020.MIS",
+    "DATOS/MISIONES/MAPA0021.MIS",
+    "DATOS/MISIONES/MAPA0022.MIS",
+    "DATOS/MISIONES/MAPA0023.MIS",
+    "DATOS/MISIONES/MAPA0024.MIS",
+    "DATOS/MISIONES/MAPA0025.MIS",
+    "DATOS/MISIONES/MAPA0026.MIS",
+};
+
 int main()
 {
   const int windowWidth = 800;
@@ -242,6 +273,9 @@ int main()
   const int buttonWidth = 200;
   const int buttonHeight = 32;
   const int buttonOffset = 6;
+
+  int misFileIndex = -1;
+  bool misFileDropdownEditMode = false;
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -255,8 +289,8 @@ int main()
 
     if (GuiButton(
             (Rectangle){
-                windowWidth / 2 - buttonWidth / 2,
-                windowHeight / 2 - buttonHeight / 2,
+                20,
+                20 + (buttonHeight + buttonOffset) * 1,
                 buttonWidth,
                 buttonHeight},
             "#7#Extract .DIR file"))
@@ -270,8 +304,8 @@ int main()
 
     if (GuiButton(
             (Rectangle){
-                windowWidth / 2 - buttonWidth / 2,
-                windowHeight / 2 - buttonHeight / 2 + buttonHeight + buttonOffset,
+                20,
+                20 + (buttonHeight + buttonOffset) * 2,
                 buttonWidth,
                 buttonHeight},
             "#7#Extract .WAD files"))
@@ -281,6 +315,39 @@ int main()
         WadFile wadFile = WadFile(wadFilePaths.at(i));
         wadFile.Extract();
       }
+    }
+
+    if (GuiButton(
+            (Rectangle){
+                20,
+                20 + (buttonHeight + buttonOffset) * 3,
+                buttonWidth,
+                buttonHeight},
+            "#7#Extract .MIS file"))
+    {
+      MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
+      misFile.Parse();
+      std::string volFileName = misFile.GetRoot()
+                                    ->GetNode(".FASE0000")
+                                    ->GetNode(".DATOSFICHEROSMISION")
+                                    ->GetNode(".VOLUMENES")
+                                    ->GetString();
+      TraceLog(LOG_INFO, volFileName.c_str());
+    }
+
+    if (GuiValueBox(
+            (Rectangle){
+                20 + buttonWidth,
+                20 + (buttonHeight + buttonOffset) * 3,
+                40,
+                buttonHeight},
+            "",
+            &misFileIndex,
+            0,
+            misFilePaths.size(),
+            misFileDropdownEditMode))
+    {
+      misFileDropdownEditMode = !misFileDropdownEditMode;
     }
 
     EndDrawing();
