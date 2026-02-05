@@ -11,6 +11,7 @@ public:
   MisFile(const std::string &path);
   ~MisFile();
   void Parse();
+  Node *GetRoot();
 
 private:
   std::ifstream misFile;

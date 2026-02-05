@@ -24,6 +24,18 @@ MisFile::~MisFile()
   delete root;
 }
 
+void MisFile::Parse()
+{
+  std::string keyword = ReadKeyword();
+  Node *value = ReadValue();
+  root->SetNode(keyword, value);
+}
+
+Node *MisFile::GetRoot()
+{
+  return root;
+}
+
 char MisFile::Peek()
 {
   return buffer.at(pointer + 1);
@@ -37,13 +49,6 @@ char MisFile::Get()
 void MisFile::Unget()
 {
   pointer--;
-}
-
-void MisFile::Parse()
-{
-  std::string keyword = ReadKeyword();
-  Node *value = ReadValue();
-  root->SetNode(keyword, value);
 }
 
 bool MisFile::IsOpeningBracket(char c) const

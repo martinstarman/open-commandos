@@ -327,6 +327,12 @@ int main()
     {
       MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
       misFile.Parse();
+      std::string volFileName = misFile.GetRoot()
+                                    ->GetNode(".FASE0000")
+                                    ->GetNode(".DATOSFICHEROSMISION")
+                                    ->GetNode(".VOLUMENES")
+                                    ->GetString();
+      TraceLog(LOG_INFO, volFileName.c_str());
     }
 
     if (GuiValueBox(
