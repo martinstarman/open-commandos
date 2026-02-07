@@ -7,6 +7,8 @@ g++                              \
   src/file/mis-file/mis-file.cpp \
   src/file/mis-file/node.cpp     \
   src/file/rle-file.cpp          \
+  src/file/vol-file/vol-file.cpp \
+  src/file/vol-file/vol-file-node.cpp \
   src/file/wad-file.cpp          \
   -I include                     \
   -L lib                         \

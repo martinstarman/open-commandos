@@ -328,5 +328,5 @@ void MisFile::ReadUntil(char c)
     Get();
   }
 
-  ReadClosingBracket();
+  Get();
 }

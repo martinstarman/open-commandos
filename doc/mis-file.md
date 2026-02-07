@@ -1,13 +1,15 @@
 # MIS file
 Mission file.
 
-# Format
+## Format
 Format is `.keyword [ .keyword [ ] ]`.
 
-| keyword     | description                  |
-| ----------- | ---------------------------- |
-| `.FASExxxx` | mission identifier (x = 0-9) |
-| ...         |                              |
+| keyword                | description                  | type   |
+| ---------------------- | ---------------------------- | ------ |
+| `.FASExxxx`            | mission identifier (x = 0-9) | node   |
+| `.DATOSFICHEROSMISION` | mission files data           | node   |
+| `.VOLUMENES`           | .VOL file name               | string |
+| ...                    |                              |        |
 
 ## Sources
 - https://commandosmodding.fandom.com/wiki/Category:Commandos:_Behind_Enemy_Lines
