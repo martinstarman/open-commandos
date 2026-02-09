@@ -4,11 +4,11 @@ g++                              \
   src/utils.cpp                  \
   src/file/bmp-file.cpp          \
   src/file/dir-file.cpp          \
-  src/file/mis-file/mis-file.cpp \
-  src/file/mis-file/node.cpp     \
+  src/file/mis-file.cpp          \
+  src/file/node.cpp              \
   src/file/rle-file.cpp          \
-  src/file/vol-file/vol-file.cpp \
-  src/file/vol-file/vol-file-node.cpp \
+  src/file/text-file.cpp         \
+  src/file/vol-file.cpp          \
   src/file/wad-file.cpp          \
   -I include                     \
   -L lib                         \

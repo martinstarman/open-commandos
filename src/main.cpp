@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 #include "file/dir-file.h"
-#include "file/mis-file/mis-file.h"
-#include "file/vol-file/vol-file.h"
+#include "file/mis-file.h"
+#include "file/vol-file.h"
 #include "file/wad-file.h"
 
 std::vector<std::string> dirFilePaths = {
@@ -360,12 +360,12 @@ int main()
     {
       MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
       misFile.Parse();
-      std::string volFileName = misFile.GetRoot()
-                                    ->GetNode(".FASE0000")
-                                    ->GetNode(".DATOSFICHEROSMISION")
-                                    ->GetNode(".VOLUMENES")
-                                    ->GetString();
-      TraceLog(LOG_INFO, volFileName.c_str());
+      // std::string volFileName = misFile.GetRoot()
+      //                               ->GetNode(".FASE0000")
+      //                               ->GetNode(".DATOSFICHEROSMISION")
+      //                               ->GetNode(".VOLUMENES")
+      //                               ->GetString();
+      // TraceLog(LOG_INFO, volFileName.c_str());
     }
 
     if (GuiValueBox(
@@ -402,12 +402,12 @@ int main()
                 40,
                 buttonHeight},
             "",
-            &misFileIndex,
+            &volFileIndex,
             0,
-            misFilePaths.size(),
-            misFileDropdownEditMode))
+            volFilePaths.size(),
+            volFileDropdownEditMode))
     {
-      misFileDropdownEditMode = !misFileDropdownEditMode;
+      volFileDropdownEditMode = !volFileDropdownEditMode;
     }
 
     EndDrawing();
