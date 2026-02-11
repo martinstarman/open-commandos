@@ -42,7 +42,7 @@ void TextFile::Unget()
 
 bool TextFile::IsNumber(char c) const
 {
-  return c >= '0' && c <= '9';
+  return c == '-' || (c >= '0' && c <= '9');
 }
 
 bool TextFile::IsString(char c) const

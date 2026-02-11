@@ -1,9 +1,9 @@
 #pragma once
 
+#include "node.h"
 #include <string>
 #include "text-file.h"
 #include <vector>
-#include "node.h"
 
 class VolFile : public TextFile
 {
@@ -18,5 +18,8 @@ private:
   bool IsSemicolon(char c) const;
   Node *ReadNode();
   Node *ReadMapDimensions();
-  Node *ReadMapPolygons();
+  Node *ReadMapPolygons(); 
+  void ReadComma();
+  void ReadComment();
+  std::string ReadQuotedString();
 };

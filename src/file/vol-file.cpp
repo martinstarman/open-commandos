@@ -42,16 +42,11 @@ Node *VolFile::ReadNode()
 
   while (!IsClosingBracket(Peek()))
   {
-    ReadWhiteSpaces();
+    ReadComment();
 
-    if (IsSemicolon(Peek()))
-    {
-      ReadUntil('\n');
-    }
-    else if (IsString(Peek()))
+    if (IsString(Peek()))
     {
       std::string keyword = ReadString();
-      ReadWhiteSpaces();
 
       if (keyword == "MAPDIMXY")
       {
@@ -60,7 +55,7 @@ Node *VolFile::ReadNode()
       }
       else if (keyword == "MAPTABPOLYS")
       {
-        Node *value = ReadMapDimensions();
+        Node *value = ReadMapPolygons();
         node->SetNode(keyword, value);
       }
     }
@@ -74,9 +69,7 @@ Node *VolFile::ReadMapDimensions()
   Node *node = new Node();
   ReadWhiteSpaces();
   double x = ReadNumber();
-  ReadWhiteSpaces();
-  Get(); // read ','
-  ReadWhiteSpaces();
+  ReadComma();
   double y = ReadNumber();
   ReadWhiteSpaces();
   std::vector<double> listOfNumbers{x, y};
@@ -87,6 +80,134 @@ Node *VolFile::ReadMapDimensions()
 Node *VolFile::ReadMapPolygons()
 {
   Node *node = new Node();
-  //
+
+  ReadUntil('{');
+
+  while (!IsClosingBracket(Peek()))
+  {
+    ReadWhiteSpaces();
+    std::string keyword = ReadString();
+
+    if (keyword == "POLY")
+    {
+      ReadWhiteSpaces();
+      std::string name = ReadQuotedString();
+      ReadComma();
+      double centerX = ReadNumber();
+      ReadComma();
+      double centerY = ReadNumber();
+      ReadComma();
+      double centerZ = ReadNumber();
+      ReadComma();
+      double height = ReadNumber();
+      ReadComma();
+      double vertices = ReadNumber();
+      ReadComma();
+      double tiles = ReadNumber();
+      ReadComment();
+      // TODO: save
+    }
+    else if (keyword == "RADIO")
+    {
+      ReadWhiteSpaces();
+      double number = ReadNumber();
+      ReadComment();
+      // TODO: save
+    }
+    else if (keyword == "EXTRAINFO")
+    {
+      ReadWhiteSpaces();
+      double n1 = ReadNumber();
+      ReadComma();
+      double n2 = ReadNumber();
+      ReadComma();
+      double n3 = ReadNumber();
+      ReadComma();
+      double n4 = ReadNumber();
+      ReadComma();
+      double n5 = ReadNumber();
+      ReadComma();
+      double n6 = ReadNumber();
+      ReadComma();
+      double n7 = ReadNumber();
+      ReadComma();
+      double n8 = ReadNumber();
+      ReadComment();
+      // TODO: save
+    }
+    else if (keyword == "TILE")
+    {
+      ReadWhiteSpaces();
+      double x = ReadNumber();
+      ReadComma();
+      double y = ReadNumber();
+      ReadComma();
+      double width = ReadNumber();
+      ReadComma();
+      double height = ReadNumber();
+      ReadComma();
+      double offsetX = ReadNumber();
+      ReadComma();
+      double offsetY = ReadNumber();
+      ReadComma();
+      double brightness = ReadNumber();
+      ReadComma();
+      std::string spriteName = ReadQuotedString();
+      ReadComma();
+      std::string transformation = ReadQuotedString();
+      ReadComment();
+      // TODO: save
+    }
+    else if (keyword == "POINT")
+    {
+      ReadWhiteSpaces();
+      double x = ReadNumber();
+      ReadComma();
+      double y = ReadNumber();
+      ReadComment();
+      // TODO: save
+    }
+    else if (keyword == "POLYRAMPA")
+    {
+      ReadUntil('\n'); // TODO
+    }
+    else
+    {
+      TraceLog(LOG_INFO, ("    > Unknown keyword " + keyword).c_str());
+    }
+  }
+
   return node;
+}
+
+std::string VolFile::ReadQuotedString()
+{
+  std::string string;
+  ReadWhiteSpaces();
+  Get(); // read "
+
+  while (Peek() != '"')
+  {
+    string += Get();
+  }
+
+  Get(); // read "
+  return string;
+}
+
+void VolFile::ReadComma()
+{
+  ReadWhiteSpaces();
+  Get();
+  ReadWhiteSpaces();
+}
+
+void VolFile::ReadComment()
+{
+  ReadWhiteSpaces();
+  if (IsSemicolon(Peek()))
+  {
+    ReadUntil('\n');
+  }
+  ReadWhiteSpaces();
 }
