@@ -1,7 +1,9 @@
-#include "node.h"
 #include <raylib.h>
 #include <string>
 #include <vector>
+
+#include "node.h"
+#include "../polygon.h"
 #include "vol-file.h"
 
 VolFile::VolFile(const std::string &path)
@@ -21,9 +23,6 @@ void VolFile::Parse()
 {
   ReadUntil('\n'); // read first line
   root = ReadNode();
-
-  TraceLog(LOG_INFO, std::to_string(root->GetNode("MAPDIMXY")->GetListOfNumbers().at(0)).c_str());
-  TraceLog(LOG_INFO, std::to_string(root->GetNode("MAPDIMXY")->GetListOfNumbers().at(1)).c_str());
 }
 
 bool VolFile::IsClosingBracket(char c) const
@@ -101,18 +100,21 @@ Node *VolFile::ReadMapPolygons()
       ReadComma();
       double height = ReadNumber();
       ReadComma();
-      double vertices = ReadNumber();
+      double numberOfVertices = ReadNumber();
       ReadComma();
-      double tiles = ReadNumber();
+      double numberOfTiles = ReadNumber();
       ReadComment();
-      // TODO: save
+
+      Polygon polygon(name, centerX, centerY, centerZ, height, numberOfVertices, numberOfTiles);
+      polygons.emplace_back(polygon);
     }
     else if (keyword == "RADIO")
     {
       ReadWhiteSpaces();
       double number = ReadNumber();
       ReadComment();
-      // TODO: save
+
+      // TODO
     }
     else if (keyword == "EXTRAINFO")
     {
@@ -133,7 +135,8 @@ Node *VolFile::ReadMapPolygons()
       ReadComma();
       double n8 = ReadNumber();
       ReadComment();
-      // TODO: save
+
+      // TODO
     }
     else if (keyword == "TILE")
     {
@@ -152,11 +155,13 @@ Node *VolFile::ReadMapPolygons()
       ReadComma();
       double brightness = ReadNumber();
       ReadComma();
-      std::string spriteName = ReadQuotedString();
+      std::string spriteName = ReadQuotedString(); // TODO: visibility (starts with -)
       ReadComma();
       std::string transformation = ReadQuotedString();
       ReadComment();
-      // TODO: save
+
+      Tile tile(x, y, width, height, offsetX, offsetY, brightness, spriteName, transformation);
+      polygons.back().AddTile(tile);
     }
     else if (keyword == "POINT")
     {
@@ -165,7 +170,8 @@ Node *VolFile::ReadMapPolygons()
       ReadComma();
       double y = ReadNumber();
       ReadComment();
-      // TODO: save
+
+      polygons.back().AddPoint(x, y);
     }
     else if (keyword == "POLYRAMPA")
     {
@@ -210,4 +216,9 @@ void VolFile::ReadComment()
     ReadUntil('\n');
   }
   ReadWhiteSpaces();
+}
+
+std::vector<Polygon> VolFile::GetPolygons()
+{
+  return polygons;
 }

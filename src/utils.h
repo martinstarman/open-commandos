@@ -4,4 +4,4 @@
 #include <vector>
 
 int GetBufferValue(std::vector<char> buffer);
-std::string Replace(std::string string, std::string replace, std::string replaceWith);
+std::string Replace(const std::string &string, const std::string &replace, const std::string &replaceWith);

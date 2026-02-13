@@ -1,6 +1,8 @@
 g++                              \
   -o build/opencommandos.exe     \
   src/main.cpp                   \
+  src/polygon.cpp                \
+  src/tile.cpp                   \
   src/utils.cpp                  \
   src/file/bmp-file.cpp          \
   src/file/dir-file.cpp          \

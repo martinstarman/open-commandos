@@ -1,5 +1,6 @@
 #include <regex>
 #include <string>
+
 #include "utils.h"
 
 int GetBufferValue(std::vector<char> buffer)
@@ -14,7 +15,7 @@ int GetBufferValue(std::vector<char> buffer)
   return value;
 }
 
-std::string Replace(std::string string, std::string replace, std::string replaceWith)
+std::string Replace(const std::string &string, const std::string &replace, const std::string &replaceWith)
 {
   return std::regex_replace(string, std::regex(replace), replaceWith);
 }

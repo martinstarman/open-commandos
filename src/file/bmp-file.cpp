@@ -1,29 +1,27 @@
 #include <raylib.h>
 #include <string>
 #include <vector>
+
 #include "bmp-file.h"
 #include "../utils.h"
 
-BmpFile::BmpFile(std::string path)
-    : path(path),
-      size(0),
+BmpFile::BmpFile()
+    : size(0),
       height(0),
       width(0)
 {
 }
 
-BmpFile::~BmpFile()
-{
-}
+BmpFile::~BmpFile() = default;
 
-void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
+void BmpFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
 {
   int offset = 0;
 
   std::vector<char> nameBuffer(
       buffer.begin() + offset,
       buffer.begin() + offset + blockFileNameSize);
-  std::string name(nameBuffer.begin(), nameBuffer.end());
+  name = std::string(nameBuffer.begin(), nameBuffer.end());
 
   offset += blockFileNameSize;
 
@@ -83,21 +81,22 @@ void BmpFile::WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>
     pixels.push_back(255);
   }
 
-  Image image;
   image.data = &pixels[0];
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 
-  std::string imageName = Replace(name, "BMP", "png");
-  std::string imagePath = path.append("/").append(imageName);
-
-  ExportImage(image, imagePath.c_str());
-
   size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
 }
 
-int BmpFile::Size()
+void BmpFile::Export(std::string path)
+{
+  std::string imageName = Replace(name, "BMP", "png");
+  std::string imagePath = path.append("/").append(imageName);
+  ExportImage(image, imagePath.c_str());
+}
+
+int BmpFile::GetSize()
 {
   return size;
 }

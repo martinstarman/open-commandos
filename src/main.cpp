@@ -4,6 +4,7 @@
 #include <raygui.h>
 #include <string>
 #include <vector>
+
 #include "file/dir-file.h"
 #include "file/mis-file.h"
 #include "file/vol-file.h"
@@ -268,7 +269,6 @@ std::vector<std::string> misFilePaths = {
 };
 
 std::vector<std::string> volFilePaths = {
-    "DATOS/MISIONES/MAPA0000.my.VOL",
     "DATOS/MISIONES/MAPA0000.VOL",
     "DATOS/MISIONES/MAPA0001.VOL",
     "DATOS/MISIONES/MAPA0002.VOL",
@@ -346,7 +346,8 @@ int main()
       for (int i = 0; i < wadFilePaths.size(); i++)
       {
         WadFile wadFile = WadFile(wadFilePaths.at(i));
-        wadFile.Extract();
+        wadFile.Load();
+        // wadFile.Export();
       }
     }
 
@@ -382,7 +383,7 @@ int main()
     {
       misFileDropdownEditMode = !misFileDropdownEditMode;
     }
-    
+
     if (GuiButton(
             (Rectangle){
                 20,
@@ -393,6 +394,10 @@ int main()
     {
       VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
       volFile.Parse();
+      // auto polys = volFile.GetPolygons().at(63).GetVertices();
+      // auto tiles = volFile.GetPolygons().at(0).GetTiles();
+      // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
+      // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
     }
 
     if (GuiValueBox(
