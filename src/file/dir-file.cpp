@@ -4,10 +4,11 @@
 #include <raylib.h>
 #include <string>
 #include <vector>
+
 #include "dir-file.h"
 #include "../utils.h"
 
-DirFile::DirFile(std::string path)
+DirFile::DirFile(const std::string &path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .dir file " + path).c_str());
   dirFile.open(path, std::ifstream::binary);

@@ -2,12 +2,13 @@
 #include <filesystem>
 #include <raylib.h>
 #include <string>
+
 #include "bmp-file.h"
 #include "rle-file.h"
 #include "../utils.h"
 #include "wad-file.h"
 
-WadFile::WadFile(std::string path) : path(path)
+WadFile::WadFile(const std::string &path) : path(path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);
@@ -19,7 +20,7 @@ WadFile::~WadFile()
   wadFile.close();
 }
 
-void WadFile::Extract()
+void WadFile::Load()
 {
   std::vector<char> buffer;
   int offset = blockHeaderSize; // skip header block
@@ -49,7 +50,7 @@ void WadFile::Extract()
   buffer.resize(blockImagesCountSize);
   wadFile.seekg(offset, wadFile.beg);
   wadFile.read(&buffer[0], blockImagesCountSize);
-  int images = GetBufferValue(buffer);
+  int imagesCount = GetBufferValue(buffer);
 
   offset += blockImagesCountSize;
   int imageFileNameSize = 32;
@@ -70,10 +71,11 @@ void WadFile::Extract()
       wadFile.seekg(offset, wadFile.beg);
       wadFile.read(&buffer[0], wadFileSize - offset);
 
-      BmpFile bmpFile = BmpFile(wadFileDirectory);
-      bmpFile.WriteFrom(buffer, palettes);
+      BmpFile bmpFile = BmpFile();
+      bmpFile.Load(buffer, palettes);
+      bmpFile.Export(wadFileDirectory);
 
-      offset += bmpFile.Size();
+      offset += bmpFile.GetSize();
     }
     else
     {
@@ -81,10 +83,11 @@ void WadFile::Extract()
       wadFile.seekg(offset, wadFile.beg);
       wadFile.read(&buffer[0], wadFileSize - offset);
 
-      RleFile rleFile = RleFile(wadFileDirectory);
-      rleFile.WriteFrom(buffer, palettes);
+      RleFile rleFile = RleFile();
+      rleFile.Load(buffer, palettes);
+      rleFile.Export(wadFileDirectory);
 
-      offset += rleFile.Size();
+      offset += rleFile.GetSize();
     }
   }
 }

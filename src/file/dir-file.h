@@ -7,7 +7,7 @@
 class DirFile
 {
 public:
-  DirFile(std::string path);
+  DirFile(const std::string &path);
   ~DirFile();
   void Extract();
 

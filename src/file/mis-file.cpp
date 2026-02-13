@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <string>
 #include <vector>
+
 #include "mis-file.h"
 #include "node.h"
 
@@ -190,6 +191,8 @@ Node *MisFile::ReadNode()
   {
     if (IsOpeningBracket(Peek()))
     {
+      // TODO: MAPA0009.MIS, MAPA0012.MIS, MAPA0018.MIS
+      //       [ .ANGBARRIDO 60 .DEMORA 50 ] [ .ANGBARRIDO 60 .DEMORA 50 ]
       ReadUntil(']');
       ReadWhiteSpaces();
     }
@@ -319,8 +322,6 @@ std::vector<std::string> MisFile::ReadListOfAbilities()
   return listOfAbilities;
 }
 
-// TODO: MAPA0009.MIS, MAPA0012.MIS, MAPA0018.MIS
-//       [ .ANGBARRIDO 60 .DEMORA 50 ] [ .ANGBARRIDO 60 .DEMORA 50 ]
 void MisFile::ReadUntil(char c)
 {
   while (Peek() != c)
@@ -328,5 +329,5 @@ void MisFile::ReadUntil(char c)
     Get();
   }
 
-  ReadClosingBracket();
+  Get();
 }

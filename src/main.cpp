@@ -4,8 +4,10 @@
 #include <raygui.h>
 #include <string>
 #include <vector>
+
 #include "file/dir-file.h"
-#include "file/mis-file/mis-file.h"
+#include "file/mis-file.h"
+#include "file/vol-file.h"
 #include "file/wad-file.h"
 
 std::vector<std::string> dirFilePaths = {
@@ -266,6 +268,34 @@ std::vector<std::string> misFilePaths = {
     "DATOS/MISIONES/MAPA0026.MIS",
 };
 
+std::vector<std::string> volFilePaths = {
+    "DATOS/MISIONES/MAPA0000.VOL",
+    "DATOS/MISIONES/MAPA0001.VOL",
+    "DATOS/MISIONES/MAPA0002.VOL",
+    "DATOS/MISIONES/MAPA0003.VOL",
+    "DATOS/MISIONES/MAPA0004.VOL",
+    "DATOS/MISIONES/MAPA0005.VOL",
+    "DATOS/MISIONES/MAPA0006.VOL",
+    "DATOS/MISIONES/MAPA0007.VOL",
+    "DATOS/MISIONES/MAPA0008.VOL",
+    "DATOS/MISIONES/MAPA0009.VOL",
+    "DATOS/MISIONES/MAPA0010.VOL",
+    "DATOS/MISIONES/MAPA0011.VOL",
+    "DATOS/MISIONES/MAPA0012.VOL",
+    "DATOS/MISIONES/MAPA0013.VOL",
+    "DATOS/MISIONES/MAPA0014.VOL",
+    "DATOS/MISIONES/MAPA0015.VOL",
+    "DATOS/MISIONES/MAPA0016.VOL",
+    "DATOS/MISIONES/MAPA0017.VOL",
+    "DATOS/MISIONES/MAPA0018.VOL",
+    "DATOS/MISIONES/MAPA0019.VOL",
+    "DATOS/MISIONES/MAPA0020.VOL",
+    "DATOS/MISIONES/MAPA0021.VOL",
+    "DATOS/MISIONES/MAPA0022.VOL",
+    "DATOS/MISIONES/MAPA0023.VOL",
+    "DATOS/MISIONES/MAPA0024.VOL",
+};
+
 int main()
 {
   const int windowWidth = 800;
@@ -274,8 +304,11 @@ int main()
   const int buttonHeight = 32;
   const int buttonOffset = 6;
 
-  int misFileIndex = -1;
+  int misFileIndex = 0;
   bool misFileDropdownEditMode = false;
+
+  int volFileIndex = 0;
+  bool volFileDropdownEditMode = false;
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -313,7 +346,8 @@ int main()
       for (int i = 0; i < wadFilePaths.size(); i++)
       {
         WadFile wadFile = WadFile(wadFilePaths.at(i));
-        wadFile.Extract();
+        wadFile.Load();
+        // wadFile.Export();
       }
     }
 
@@ -327,12 +361,12 @@ int main()
     {
       MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
       misFile.Parse();
-      std::string volFileName = misFile.GetRoot()
-                                    ->GetNode(".FASE0000")
-                                    ->GetNode(".DATOSFICHEROSMISION")
-                                    ->GetNode(".VOLUMENES")
-                                    ->GetString();
-      TraceLog(LOG_INFO, volFileName.c_str());
+      // std::string volFileName = misFile.GetRoot()
+      //                               ->GetNode(".FASE0000")
+      //                               ->GetNode(".DATOSFICHEROSMISION")
+      //                               ->GetNode(".VOLUMENES")
+      //                               ->GetString();
+      // TraceLog(LOG_INFO, volFileName.c_str());
     }
 
     if (GuiValueBox(
@@ -348,6 +382,37 @@ int main()
             misFileDropdownEditMode))
     {
       misFileDropdownEditMode = !misFileDropdownEditMode;
+    }
+
+    if (GuiButton(
+            (Rectangle){
+                20,
+                20 + (buttonHeight + buttonOffset) * 4,
+                buttonWidth,
+                buttonHeight},
+            "#7#Extract .VOL file"))
+    {
+      VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
+      volFile.Parse();
+      // auto polys = volFile.GetPolygons().at(63).GetVertices();
+      // auto tiles = volFile.GetPolygons().at(0).GetTiles();
+      // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
+      // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
+    }
+
+    if (GuiValueBox(
+            (Rectangle){
+                20 + buttonWidth,
+                20 + (buttonHeight + buttonOffset) * 4,
+                40,
+                buttonHeight},
+            "",
+            &volFileIndex,
+            0,
+            volFilePaths.size(),
+            volFileDropdownEditMode))
+    {
+      volFileDropdownEditMode = !volFileDropdownEditMode;
     }
 
     EndDrawing();

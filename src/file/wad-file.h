@@ -6,9 +6,9 @@
 class WadFile
 {
 public:
-  WadFile(std::string path);
+  WadFile(const std::string &path);
   ~WadFile();
-  void Extract();
+  void Load();
 
 private:
   std::string path;

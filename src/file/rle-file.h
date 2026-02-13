@@ -1,18 +1,21 @@
 #pragma once
 
+#include <raylib.h>
 #include <string>
 #include <vector>
 
 class RleFile
 {
 public:
-  RleFile(std::string path);
+  RleFile();
   ~RleFile();
-  void WriteFrom(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
-  int Size();
+  void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
+  void Export(std::string path);
+  int GetSize();
 
 private:
-  std::string path;
+  Image image;
+  std::string name;
   int size;
   int blockHeaderSize = 64;
   int blockFileNameSize = 32;
