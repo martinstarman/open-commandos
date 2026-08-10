@@ -321,7 +321,7 @@ int main()
     DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
 
     if (GuiButton(
-            (Rectangle){
+            Rectangle{
                 20,
                 20 + (buttonHeight + buttonOffset) * 1,
                 buttonWidth,
@@ -336,7 +336,7 @@ int main()
     }
 
     if (GuiButton(
-            (Rectangle){
+            Rectangle{
                 20,
                 20 + (buttonHeight + buttonOffset) * 2,
                 buttonWidth,
@@ -352,7 +352,7 @@ int main()
     }
 
     if (GuiButton(
-            (Rectangle){
+            Rectangle{
                 20,
                 20 + (buttonHeight + buttonOffset) * 3,
                 buttonWidth,
@@ -370,7 +370,7 @@ int main()
     }
 
     if (GuiValueBox(
-            (Rectangle){
+            Rectangle{
                 20 + buttonWidth,
                 20 + (buttonHeight + buttonOffset) * 3,
                 40,
@@ -385,7 +385,7 @@ int main()
     }
 
     if (GuiButton(
-            (Rectangle){
+            Rectangle{
                 20,
                 20 + (buttonHeight + buttonOffset) * 4,
                 buttonWidth,
@@ -401,7 +401,7 @@ int main()
     }
 
     if (GuiValueBox(
-            (Rectangle){
+            Rectangle{
                 20 + buttonWidth,
                 20 + (buttonHeight + buttonOffset) * 4,
                 40,
