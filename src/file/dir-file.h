@@ -1,8 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <raylib.h>
 #include <string>
+#include <vector>
+
+#include "../utils.h"
 
 class DirFile
 {

@@ -1,7 +1,3 @@
-#include <cassert>
-#include <tuple>
-#include <vector>
-
 #include "polygon.h"
 
 Polygon::Polygon(

@@ -1,7 +1,14 @@
 #pragma once
 
+#include <algorithm>
+#include <filesystem>
 #include <fstream>
+#include <raylib.h>
 #include <string>
+
+#include "bmp-file.h"
+#include "rle-file.h"
+#include "../utils.h"
 
 class WadFile
 {

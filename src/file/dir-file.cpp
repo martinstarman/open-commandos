@@ -1,12 +1,4 @@
-#include <algorithm>
-#include <filesystem>
-#include <fstream>
-#include <raylib.h>
-#include <string>
-#include <vector>
-
 #include "dir-file.h"
-#include "../utils.h"
 
 DirFile::DirFile(const std::string &path)
 {

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cctype>
 #include <fstream>
+#include <raylib.h>
 #include <string>
 #include <vector>
 

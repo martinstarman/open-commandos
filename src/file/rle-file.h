@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../utils.h"
+
 class RleFile
 {
 public:

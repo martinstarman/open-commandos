@@ -1,6 +1,3 @@
-#include <cassert>
-#include <string>
-
 #include "node.h"
 
 Node::Node() = default;

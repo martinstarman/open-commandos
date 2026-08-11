@@ -1,9 +1,4 @@
-#include <raylib.h>
-#include <string>
-#include <vector>
-
 #include "bmp-file.h"
-#include "../utils.h"
 
 BmpFile::BmpFile()
     : size(0),

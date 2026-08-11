@@ -1,11 +1,4 @@
-#include <cctype>
-#include <fstream>
-#include <raylib.h>
-#include <string>
-#include <vector>
-
 #include "mis-file.h"
-#include "node.h"
 
 MisFile::MisFile(const std::string &path) : misFile(path), root(new Node()), pointer(-1)
 {

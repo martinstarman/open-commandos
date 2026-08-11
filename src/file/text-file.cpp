@@ -1,6 +1,3 @@
-#include <cctype>
-#include <fstream>
-
 #include "text-file.h"
 
 TextFile::TextFile() : pointer(-1)

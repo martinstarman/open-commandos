@@ -1,9 +1,3 @@
-#include <raylib.h>
-#include <string>
-#include <vector>
-
-#include "node.h"
-#include "../polygon.h"
 #include "vol-file.h"
 
 VolFile::VolFile(const std::string &path)

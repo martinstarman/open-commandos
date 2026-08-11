@@ -1,11 +1,3 @@
-#include <algorithm>
-#include <filesystem>
-#include <raylib.h>
-#include <string>
-
-#include "bmp-file.h"
-#include "rle-file.h"
-#include "../utils.h"
 #include "wad-file.h"
 
 WadFile::WadFile(const std::string &path) : path(path)
