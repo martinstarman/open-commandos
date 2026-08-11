@@ -17,6 +17,7 @@ target_sources(open-commandos
   src/file/mis-file.cpp
   src/file/node.cpp
   src/file/rle-file.cpp
+  src/file/sec-file.cpp
   src/file/text-file.cpp
   src/file/vol-file.cpp
   src/file/wad-file.cpp
