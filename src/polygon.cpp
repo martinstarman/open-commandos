@@ -7,13 +7,14 @@ Polygon::Polygon(
     double centerZ,
     double height,
     double numberOfVertices,
-    double numberOfTiles) : name(name),
-                            centerX(centerX),
-                            centerY(centerY),
-                            centerZ(centerZ),
-                            height(height),
-                            numberOfVertices(numberOfVertices),
-                            numberOfTiles(numberOfTiles)
+    double numberOfTiles)
+    : name(name),
+      centerX(centerX),
+      centerY(centerY),
+      centerZ(centerZ),
+      height(height),
+      numberOfVertices(numberOfVertices),
+      numberOfTiles(numberOfTiles)
 {
 }
 

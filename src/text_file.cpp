@@ -1,6 +1,7 @@
 #include "text_file.h"
 
-TextFile::TextFile() : pointer(-1)
+TextFile::TextFile()
+    : pointer(-1)
 {
 }
 

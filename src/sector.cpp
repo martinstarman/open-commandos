@@ -9,15 +9,16 @@ Sector::Sector(
     int type,
     int height,
     int offset,
-    int flags) : numberOfVertices(numberOfVertices),
-                 vertexIndexes(vertexIndexes),
-                 x(x),
-                 y(y),
-                 z(z),
-                 type(type),
-                 height(height),
-                 offset(offset),
-                 flags(flags)
+    int flags)
+    : numberOfVertices(numberOfVertices),
+      vertexIndexes(vertexIndexes),
+      x(x),
+      y(y),
+      z(z),
+      type(type),
+      height(height),
+      offset(offset),
+      flags(flags)
 {
 }
 

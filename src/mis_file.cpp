@@ -1,6 +1,9 @@
 #include "mis_file.h"
 
-MisFile::MisFile(const std::string &path) : misFile(path), root(new Node()), pointer(-1)
+MisFile::MisFile(const std::string &path)
+    : misFile(path),
+      root(new Node()),
+      pointer(-1)
 {
   misFile.seekg(0, std::ios_base::end);
   std::streampos fileSize = misFile.tellg();

@@ -1,6 +1,7 @@
 #include "wad_file.h"
 
-WadFile::WadFile(const std::string &path) : path(path)
+WadFile::WadFile(const std::string &path)
+    : path(path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);

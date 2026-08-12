@@ -9,15 +9,16 @@ Tile::Tile(
     double offsetY,
     double brightness,
     const std::string &spriteName,
-    const std::string &transformation) : x(x),
-                                         y(y),
-                                         width(width),
-                                         height(height),
-                                         offsetX(offsetX),
-                                         offsetY(offsetY),
-                                         brightness(brightness),
-                                         spriteName(spriteName),
-                                         transformation(transformation)
+    const std::string &transformation)
+    : x(x),
+      y(y),
+      width(width),
+      height(height),
+      offsetX(offsetX),
+      offsetY(offsetY),
+      brightness(brightness),
+      spriteName(spriteName),
+      transformation(transformation)
 {
 }
 
