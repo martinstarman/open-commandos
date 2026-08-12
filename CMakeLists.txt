@@ -12,12 +12,14 @@ target_sources(open-commandos
   src/polygon.cpp
   src/tile.cpp
   src/utils.cpp
+  src/file/area.cpp
   src/file/bmp-file.cpp
   src/file/dir-file.cpp
   src/file/mis-file.cpp
   src/file/node.cpp
   src/file/rle-file.cpp
   src/file/sec-file.cpp
+  src/file/sector.cpp
   src/file/text-file.cpp
   src/file/vol-file.cpp
   src/file/wad-file.cpp
