@@ -1,4 +1,4 @@
-#include "rle-file.h"
+#include "rle_file.h"
 
 RleFile::RleFile()
     : size(0)

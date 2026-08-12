@@ -1,4 +1,4 @@
-#include "bmp-file.h"
+#include "bmp_file.h"
 
 BmpFile::BmpFile()
     : size(0),

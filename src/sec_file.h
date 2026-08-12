@@ -7,7 +7,7 @@
 
 #include "area.h"
 #include "sector.h"
-#include "text-file.h"
+#include "text_file.h"
 
 class SecFile : public TextFile
 {

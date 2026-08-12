@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../utils.h"
+#include "utils.h"
 
 class BmpFile
 {

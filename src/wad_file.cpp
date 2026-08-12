@@ -1,4 +1,4 @@
-#include "wad-file.h"
+#include "wad_file.h"
 
 WadFile::WadFile(const std::string &path) : path(path)
 {

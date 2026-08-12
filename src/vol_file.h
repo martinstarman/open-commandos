@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "node.h"
-#include "../polygon.h"
-#include "text-file.h"
+#include "polygon.h"
+#include "text_file.h"
 
 class VolFile : public TextFile
 {

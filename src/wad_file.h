@@ -6,9 +6,9 @@
 #include <raylib.h>
 #include <string>
 
-#include "bmp-file.h"
-#include "rle-file.h"
-#include "../utils.h"
+#include "bmp_file.h"
+#include "rle_file.h"
+#include "utils.h"
 
 class WadFile
 {

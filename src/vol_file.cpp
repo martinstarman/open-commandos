@@ -1,4 +1,4 @@
-#include "vol-file.h"
+#include "vol_file.h"
 
 VolFile::VolFile(const std::string &path)
 {

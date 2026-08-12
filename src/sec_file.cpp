@@ -1,4 +1,4 @@
-#include "sec-file.h"
+#include "sec_file.h"
 
 SecFile::SecFile(const std::string &path)
 {

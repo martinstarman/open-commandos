@@ -1,4 +1,4 @@
-#include "dir-file.h"
+#include "dir_file.h"
 
 DirFile::DirFile(const std::string &path)
 {

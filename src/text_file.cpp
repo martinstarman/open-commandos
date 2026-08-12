@@ -1,4 +1,4 @@
-#include "text-file.h"
+#include "text_file.h"
 
 TextFile::TextFile() : pointer(-1)
 {

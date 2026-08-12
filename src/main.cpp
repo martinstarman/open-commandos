@@ -5,11 +5,11 @@
 #include <string>
 #include <vector>
 
-#include "file/dir-file.h"
-#include "file/mis-file.h"
-#include "file/sec-file.h"
-#include "file/vol-file.h"
-#include "file/wad-file.h"
+#include "dir_file.h"
+#include "mis_file.h"
+#include "sec_file.h"
+#include "vol_file.h"
+#include "wad_file.h"
 
 std::vector<std::string> dirFilePaths = {
     "WARGAME.DIR"};

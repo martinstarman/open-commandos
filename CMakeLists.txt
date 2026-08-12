@@ -8,21 +8,21 @@ add_executable(open-commandos)
 
 target_sources(open-commandos
   PRIVATE
+  src/area.cpp
+  src/bmp_file.cpp
+  src/dir_file.cpp
   src/main.cpp
+  src/mis_file.cpp
+  src/node.cpp
   src/polygon.cpp
+  src/rle_file.cpp
+  src/sec_file.cpp
+  src/sector.cpp
+  src/text_file.cpp
   src/tile.cpp
   src/utils.cpp
-  src/file/area.cpp
-  src/file/bmp-file.cpp
-  src/file/dir-file.cpp
-  src/file/mis-file.cpp
-  src/file/node.cpp
-  src/file/rle-file.cpp
-  src/file/sec-file.cpp
-  src/file/sector.cpp
-  src/file/text-file.cpp
-  src/file/vol-file.cpp
-  src/file/wad-file.cpp
+  src/vol_file.cpp
+  src/wad_file.cpp
 )
 
 find_package(raylib CONFIG REQUIRED)
