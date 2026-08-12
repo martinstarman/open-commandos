@@ -36,3 +36,6 @@
 | name   | 4     |                                   |
 | width  | 4     | equals `width` in `header` block  |
 | height | 4     | equals `height` in `header` block |
+
+## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf

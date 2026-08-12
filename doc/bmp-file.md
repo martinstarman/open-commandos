@@ -18,3 +18,6 @@
 | width        | 4     |                                                                                                                     |
 | color depth  | 2     |                                                                                                                     |
 | unknown      | 6     |                                                                                                                     |
+
+## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf

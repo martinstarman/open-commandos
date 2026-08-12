@@ -12,4 +12,5 @@ Format is `.keyword [ .keyword [ ] ]`.
 | ...                    |                              |        |
 
 ## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf
 - https://commandosmodding.fandom.com/wiki/Category:Commandos:_Behind_Enemy_Lines
