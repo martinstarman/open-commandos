@@ -17,3 +17,6 @@ Archive containing all game data as list of entries.
 | -1    | `0xFF`            | directory end |
 | 0     | `0x00`            | file          |
 | 1     | `0x01`            | directory     |
+
+## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf

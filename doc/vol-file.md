@@ -14,3 +14,6 @@ TBD
 | `POINT <x> <y>`                                                                                            | polygon point relative to polygon center                                                                     |
 | `;`                                                                                                        | comment                                                                                                      |
 | `POLYRAMPA `                                                                                               | TBD                                                                                                          |
+
+## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf

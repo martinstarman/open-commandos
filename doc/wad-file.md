@@ -19,3 +19,6 @@ Unknown.
 | ---------- | ----- | -------------------------------------------------------------------------- |
 | pallete    | 512   | 256 2-byte colors in format `RGB565` (`G2G1G0B4B3B2B1B0 R4R3R2R1R0G5G4G3`) |
 | unknown    | 13    |                                                                            |
+
+## Sources
+- https://retrogamesvault.com/commandosmod/downloads/CommandosFileTypes.pdf

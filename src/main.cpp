@@ -7,6 +7,7 @@
 
 #include "file/dir-file.h"
 #include "file/mis-file.h"
+#include "file/sec-file.h"
 #include "file/vol-file.h"
 #include "file/wad-file.h"
 
@@ -296,6 +297,32 @@ std::vector<std::string> volFilePaths = {
     "DATOS/MISIONES/MAPA0024.VOL",
 };
 
+std::vector<std::string> secFilePaths = {
+    "DATOS/MISIONES/MAPA0000.SEC",
+    "DATOS/MISIONES/MAPA0001.SEC",
+    "DATOS/MISIONES/MAPA0002.SEC",
+    "DATOS/MISIONES/MAPA0003.SEC",
+    "DATOS/MISIONES/MAPA0004.SEC",
+    "DATOS/MISIONES/MAPA0005.SEC",
+    "DATOS/MISIONES/MAPA0006.SEC",
+    "DATOS/MISIONES/MAPA0007.SEC",
+    "DATOS/MISIONES/MAPA0008.SEC",
+    "DATOS/MISIONES/MAPA0009.SEC",
+    "DATOS/MISIONES/MAPA0010.SEC",
+    "DATOS/MISIONES/MAPA0012.SEC",
+    "DATOS/MISIONES/MAPA0013.SEC",
+    "DATOS/MISIONES/MAPA0015.SEC",
+    "DATOS/MISIONES/MAPA0016.SEC",
+    "DATOS/MISIONES/MAPA0017.SEC",
+    "DATOS/MISIONES/MAPA0018.SEC",
+    "DATOS/MISIONES/MAPA0019.SEC",
+    "DATOS/MISIONES/MAPA0020.SEC",
+    "DATOS/MISIONES/MAPA0021.SEC",
+    "DATOS/MISIONES/MAPA0022.SEC",
+    "DATOS/MISIONES/MAPA0023.SEC",
+    "DATOS/MISIONES/MAPA0024.SEC",
+};
+
 int main()
 {
   const int windowWidth = 800;
@@ -309,6 +336,9 @@ int main()
 
   int volFileIndex = 0;
   bool volFileDropdownEditMode = false;
+
+  int secFileIndex = 0;
+  bool secFileDropdownEditMode = false;
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -413,6 +443,33 @@ int main()
             volFileDropdownEditMode))
     {
       volFileDropdownEditMode = !volFileDropdownEditMode;
+    }
+
+    if (GuiButton(
+            Rectangle{
+                20,
+                20 + (buttonHeight + buttonOffset) * 5,
+                buttonWidth,
+                buttonHeight},
+            "#7#Extract .SEC file"))
+    {
+      SecFile secFile = SecFile(secFilePaths.at(secFileIndex));
+      secFile.Parse();
+    }
+
+    if (GuiValueBox(
+            Rectangle{
+                20 + buttonWidth,
+                20 + (buttonHeight + buttonOffset) * 5,
+                40,
+                buttonHeight},
+            "",
+            &secFileIndex,
+            0,
+            secFilePaths.size(),
+            secFileDropdownEditMode))
+    {
+      secFileDropdownEditMode = !secFileDropdownEditMode;
     }
 
     EndDrawing();
