@@ -13,7 +13,7 @@ WadFile::~WadFile()
   wadFile.close();
 }
 
-void WadFile::Load()
+void WadFile::Extract()
 {
   std::vector<char> buffer;
   int offset = blockHeaderSize; // skip header block

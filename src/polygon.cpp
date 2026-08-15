@@ -22,10 +22,10 @@ Polygon::~Polygon() = default;
 
 void Polygon::AddPoint(double x, double y)
 {
-  vertices.emplace_back(std::make_tuple(x, y));
+  vertices.push_back(std::make_tuple(x, y));
 }
 
-std::vector<std::tuple<double, double>> Polygon::GetVertices()
+std::vector<std::tuple<double, double>> Polygon::GetVertices() const
 {
   assert(numberOfVertices == vertices.size());
   return vertices;
@@ -33,10 +33,10 @@ std::vector<std::tuple<double, double>> Polygon::GetVertices()
 
 void Polygon::AddTile(Tile tile)
 {
-  tiles.emplace_back(tile);
+  tiles.push_back(tile);
 }
 
-std::vector<Tile> Polygon::GetTiles()
+std::vector<Tile> Polygon::GetTiles() const
 {
   assert(numberOfTiles == tiles.size());
   return tiles;

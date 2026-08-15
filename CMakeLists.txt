@@ -13,6 +13,7 @@ target_sources(open-commandos
   src/dir_file.cpp
   src/main.cpp
   src/mis_file.cpp
+  src/mission.cpp
   src/node.cpp
   src/polygon.cpp
   src/rle_file.cpp

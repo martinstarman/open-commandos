@@ -20,9 +20,9 @@ public:
       double numberOfTiles);
   ~Polygon();
   void AddPoint(double x, double y);
-  std::vector<std::tuple<double, double>> GetVertices();
+  std::vector<std::tuple<double, double>> GetVertices() const;
   void AddTile(Tile tile);
-  std::vector<Tile> GetTiles();
+  std::vector<Tile> GetTiles() const;
 
 private:
   std::string name;

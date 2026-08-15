@@ -23,3 +23,8 @@ Tile::Tile(
 }
 
 Tile::~Tile() = default;
+
+std::string Tile::GetSpriteName() const
+{
+  return spriteName;
+}

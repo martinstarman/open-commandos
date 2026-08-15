@@ -7,6 +7,7 @@
 
 #include "dir_file.h"
 #include "mis_file.h"
+#include "mission.h"
 #include "sec_file.h"
 #include "vol_file.h"
 #include "wad_file.h"
@@ -323,6 +324,32 @@ std::vector<std::string> secFilePaths = {
     "DATOS/MISIONES/MAPA0024.SEC",
 };
 
+std::vector<std::string> missions = {
+    "0000",
+    "0001",
+    "0002",
+    "0003",
+    "0004",
+    "0005",
+    "0006",
+    "0007",
+    "0008",
+    "0009",
+    "0010",
+    "0012",
+    "0013",
+    "0015",
+    "0016",
+    "0017",
+    "0018",
+    "0019",
+    "0020",
+    "0021",
+    "0022",
+    "0023",
+    "0024",
+};
+
 int main()
 {
   const int windowWidth = 800;
@@ -339,6 +366,9 @@ int main()
 
   int secFileIndex = 0;
   bool secFileDropdownEditMode = false;
+
+  int missionIndex = 0;
+  bool missionDropdownEditMode = false;
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -376,8 +406,7 @@ int main()
       for (int i = 0; i < wadFilePaths.size(); i++)
       {
         WadFile wadFile = WadFile(wadFilePaths.at(i));
-        wadFile.Load();
-        // wadFile.Export();
+        wadFile.Extract();
       }
     }
 
@@ -391,12 +420,6 @@ int main()
     {
       MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
       misFile.Parse();
-      // std::string volFileName = misFile.GetRoot()
-      //                               ->GetNode(".FASE0000")
-      //                               ->GetNode(".DATOSFICHEROSMISION")
-      //                               ->GetNode(".VOLUMENES")
-      //                               ->GetString();
-      // TraceLog(LOG_INFO, volFileName.c_str());
     }
 
     if (GuiValueBox(
@@ -470,6 +493,33 @@ int main()
             secFileDropdownEditMode))
     {
       secFileDropdownEditMode = !secFileDropdownEditMode;
+    }
+
+    if (GuiButton(
+            Rectangle{
+                20,
+                20 + (buttonHeight + buttonOffset) * 6,
+                buttonWidth,
+                buttonHeight},
+            "#7#Load mission"))
+    {
+      Mission mission;
+      mission.Load(missions.at(missionIndex));
+    }
+
+    if (GuiValueBox(
+            Rectangle{
+                20 + buttonWidth,
+                20 + (buttonHeight + buttonOffset) * 6,
+                40,
+                buttonHeight},
+            "",
+            &missionIndex,
+            0,
+            missions.size(),
+            missionDropdownEditMode))
+    {
+      missionDropdownEditMode = !missionDropdownEditMode;
     }
 
     EndDrawing();
