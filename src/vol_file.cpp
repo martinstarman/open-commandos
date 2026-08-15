@@ -100,7 +100,7 @@ Node *VolFile::ReadMapPolygons()
       ReadComment();
 
       Polygon polygon(name, centerX, centerY, centerZ, height, numberOfVertices, numberOfTiles);
-      polygons.emplace_back(polygon);
+      polygons.push_back(polygon);
     }
     else if (keyword == "RADIO")
     {
@@ -169,7 +169,26 @@ Node *VolFile::ReadMapPolygons()
     }
     else if (keyword == "POLYRAMPA")
     {
-      ReadUntil('\n'); // TODO
+      ReadWhiteSpaces();
+      std::string name = ReadQuotedString();
+      ReadComma();
+      double centerX = ReadNumber();
+      ReadComma();
+      double centerY = ReadNumber();
+      ReadComma();
+      double centerZ = ReadNumber();
+      ReadComma();
+      double height = ReadNumber();
+      ReadComma();
+      double heightOff = ReadNumber(); // TODO: not used
+      ReadComma();
+      double numberOfVertices = ReadNumber();
+      ReadComma();
+      double numberOfTiles = ReadNumber();
+      ReadComment();
+
+      Polygon polygon(name, centerX, centerY, centerZ, height, numberOfVertices, numberOfTiles);
+      polygons.push_back(polygon);
     }
     else
     {
