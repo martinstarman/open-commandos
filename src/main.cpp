@@ -238,6 +238,29 @@ std::vector<std::string> wadFilePaths = {
     "DATOS/RECURSOS/ELEM/VAGONETA.WAD",
     "DATOS/RECURSOS/ELEM/VOLQUETE.WAD",
     "DATOS/RECURSOS/ELEM/ZODIAC2.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0000.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0001.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0002.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0003.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0004.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0005.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/fase0006.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0007.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0008.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0009.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0010.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0012.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/Fase0013.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0015.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0016.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0017.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0018.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0019.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/fase0020.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0021.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0022.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0023.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0024.WAD",
 };
 
 std::vector<std::string> misFilePaths = {
@@ -369,6 +392,7 @@ int main()
 
   int missionIndex = 0;
   bool missionDropdownEditMode = false;
+  Mission *mission = nullptr;
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -377,6 +401,11 @@ int main()
   {
     BeginDrawing();
     ClearBackground(RAYWHITE);
+
+    if (mission != nullptr)
+    {
+      mission->Render();
+    }
 
     DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
 
@@ -503,8 +532,8 @@ int main()
                 buttonHeight},
             "#7#Load mission"))
     {
-      Mission mission;
-      mission.Load(missions.at(missionIndex));
+      mission = new Mission();
+      mission->Load(missions.at(missionIndex));
     }
 
     if (GuiValueBox(
@@ -524,6 +553,8 @@ int main()
 
     EndDrawing();
   }
+
+  delete mission;
 
   CloseWindow();
   return 0;

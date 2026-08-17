@@ -48,7 +48,10 @@ void WadFile::Extract()
   offset += blockImagesCountSize;
   int imageFileNameSize = 32;
 
-  std::string wadFileDirectory = std::filesystem::path(path).parent_path().string();
+  if (!std::filesystem::exists("export"))
+  {
+    std::filesystem::create_directories("export");
+  }
 
   while (offset < wadFileSize)
   {
@@ -66,7 +69,7 @@ void WadFile::Extract()
 
       BmpFile bmpFile = BmpFile();
       bmpFile.Load(buffer, palettes);
-      bmpFile.Export(wadFileDirectory);
+      bmpFile.Export("export");
 
       offset += bmpFile.GetSize();
     }
@@ -78,7 +81,7 @@ void WadFile::Extract()
 
       RleFile rleFile = RleFile();
       rleFile.Load(buffer, palettes);
-      rleFile.Export(wadFileDirectory);
+      rleFile.Export("export");
 
       offset += rleFile.GetSize();
     }

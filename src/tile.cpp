@@ -24,6 +24,16 @@ Tile::Tile(
 
 Tile::~Tile() = default;
 
+double Tile::GetX() const
+{
+  return x;
+}
+
+double Tile::GetY() const
+{
+  return y;
+}
+
 std::string Tile::GetSpriteName() const
 {
   return spriteName;
