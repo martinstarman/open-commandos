@@ -16,6 +16,8 @@ public:
       const std::string &spriteName,
       const std::string &transformation);
   ~Tile();
+  double GetX() const;
+  double GetY() const;
   std::string GetSpriteName() const;
 
 private:

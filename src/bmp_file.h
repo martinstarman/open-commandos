@@ -27,6 +27,7 @@ public:
 private:
   Image image;
   std::string name;
+  std::vector<unsigned char> pixels;
   int size;
   int height;
   int width;
