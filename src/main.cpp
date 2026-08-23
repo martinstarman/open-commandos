@@ -402,160 +402,161 @@ int main()
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    if (mission != nullptr)
+    if (mission == nullptr)
+    {
+      DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 1,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .DIR file"))
+      {
+        for (int i = 0; i < dirFilePaths.size(); i++)
+        {
+          DirFile dirFile = DirFile(dirFilePaths.at(i));
+          dirFile.Extract();
+        }
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 2,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .WAD files"))
+      {
+        for (int i = 0; i < wadFilePaths.size(); i++)
+        {
+          WadFile wadFile = WadFile(wadFilePaths.at(i));
+          wadFile.Extract();
+        }
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 3,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .MIS file"))
+      {
+        MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
+        misFile.Parse();
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 3,
+                  40,
+                  buttonHeight},
+              "",
+              &misFileIndex,
+              0,
+              misFilePaths.size(),
+              misFileDropdownEditMode))
+      {
+        misFileDropdownEditMode = !misFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 4,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .VOL file"))
+      {
+        VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
+        volFile.Parse();
+        // auto polys = volFile.GetPolygons().at(63).GetVertices();
+        // auto tiles = volFile.GetPolygons().at(0).GetTiles();
+        // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
+        // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 4,
+                  40,
+                  buttonHeight},
+              "",
+              &volFileIndex,
+              0,
+              volFilePaths.size(),
+              volFileDropdownEditMode))
+      {
+        volFileDropdownEditMode = !volFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 5,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .SEC file"))
+      {
+        SecFile secFile = SecFile(secFilePaths.at(secFileIndex));
+        secFile.Parse();
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 5,
+                  40,
+                  buttonHeight},
+              "",
+              &secFileIndex,
+              0,
+              secFilePaths.size(),
+              secFileDropdownEditMode))
+      {
+        secFileDropdownEditMode = !secFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 6,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Load mission"))
+      {
+        mission = new Mission();
+        mission->Load(missions.at(missionIndex));
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 6,
+                  40,
+                  buttonHeight},
+              "",
+              &missionIndex,
+              0,
+              missions.size(),
+              missionDropdownEditMode))
+      {
+        missionDropdownEditMode = !missionDropdownEditMode;
+      }
+    }
+    else
     {
       mission->Render();
-    }
-
-    DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 1,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .DIR file"))
-    {
-      for (int i = 0; i < dirFilePaths.size(); i++)
-      {
-        DirFile dirFile = DirFile(dirFilePaths.at(i));
-        dirFile.Extract();
-      }
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 2,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .WAD files"))
-    {
-      for (int i = 0; i < wadFilePaths.size(); i++)
-      {
-        WadFile wadFile = WadFile(wadFilePaths.at(i));
-        wadFile.Extract();
-      }
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 3,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .MIS file"))
-    {
-      MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
-      misFile.Parse();
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 3,
-                40,
-                buttonHeight},
-            "",
-            &misFileIndex,
-            0,
-            misFilePaths.size(),
-            misFileDropdownEditMode))
-    {
-      misFileDropdownEditMode = !misFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 4,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .VOL file"))
-    {
-      VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
-      volFile.Parse();
-      // auto polys = volFile.GetPolygons().at(63).GetVertices();
-      // auto tiles = volFile.GetPolygons().at(0).GetTiles();
-      // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
-      // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 4,
-                40,
-                buttonHeight},
-            "",
-            &volFileIndex,
-            0,
-            volFilePaths.size(),
-            volFileDropdownEditMode))
-    {
-      volFileDropdownEditMode = !volFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 5,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .SEC file"))
-    {
-      SecFile secFile = SecFile(secFilePaths.at(secFileIndex));
-      secFile.Parse();
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 5,
-                40,
-                buttonHeight},
-            "",
-            &secFileIndex,
-            0,
-            secFilePaths.size(),
-            secFileDropdownEditMode))
-    {
-      secFileDropdownEditMode = !secFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 6,
-                buttonWidth,
-                buttonHeight},
-            "#7#Load mission"))
-    {
-      mission = new Mission();
-      mission->Load(missions.at(missionIndex));
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 6,
-                40,
-                buttonHeight},
-            "",
-            &missionIndex,
-            0,
-            missions.size(),
-            missionDropdownEditMode))
-    {
-      missionDropdownEditMode = !missionDropdownEditMode;
     }
 
     EndDrawing();
   }
 
   delete mission;
-
   CloseWindow();
   return 0;
 }
