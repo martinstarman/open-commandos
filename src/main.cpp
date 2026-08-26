@@ -238,6 +238,29 @@ std::vector<std::string> wadFilePaths = {
     "DATOS/RECURSOS/ELEM/VAGONETA.WAD",
     "DATOS/RECURSOS/ELEM/VOLQUETE.WAD",
     "DATOS/RECURSOS/ELEM/ZODIAC2.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0000.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0001.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0002.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0003.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0004.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0005.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/fase0006.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0007.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0008.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0009.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0010.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0012.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/Fase0013.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0015.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0016.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0017.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0018.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0019.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/fase0020.wad",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0021.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0022.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0023.WAD",
+    "DATOS/RECURSOS/BMPS/MAP/FASE0024.WAD",
 };
 
 std::vector<std::string> misFilePaths = {
@@ -369,6 +392,9 @@ int main()
 
   int missionIndex = 0;
   bool missionDropdownEditMode = false;
+  Mission *mission = nullptr;
+
+  std::string wadFileExportPath = "export";
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -378,153 +404,167 @@ int main()
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 1,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .DIR file"))
+    if (mission == nullptr)
     {
-      for (int i = 0; i < dirFilePaths.size(); i++)
+      DrawText("Hello openCommandos!", 20, 20, 20, BLACK);
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 1,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .DIR file"))
       {
-        DirFile dirFile = DirFile(dirFilePaths.at(i));
-        dirFile.Extract();
+        for (int i = 0; i < dirFilePaths.size(); i++)
+        {
+          DirFile dirFile = DirFile(dirFilePaths.at(i));
+          dirFile.Extract();
+        }
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 2,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .WAD files"))
+      {
+        if (!std::filesystem::exists(wadFileExportPath))
+        {
+          std::filesystem::create_directory(wadFileExportPath);
+        }
+
+        for (int i = 0; i < wadFilePaths.size(); i++)
+        {
+          WadFile wadFile = WadFile(wadFilePaths.at(i));
+          wadFile.Extract(wadFileExportPath);
+        }
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 3,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .MIS file"))
+      {
+        MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
+        misFile.Parse();
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 3,
+                  40,
+                  buttonHeight},
+              "",
+              &misFileIndex,
+              0,
+              misFilePaths.size(),
+              misFileDropdownEditMode))
+      {
+        misFileDropdownEditMode = !misFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 4,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .VOL file"))
+      {
+        VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
+        volFile.Parse();
+        // auto polys = volFile.GetPolygons().at(63).GetVertices();
+        // auto tiles = volFile.GetPolygons().at(0).GetTiles();
+        // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
+        // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 4,
+                  40,
+                  buttonHeight},
+              "",
+              &volFileIndex,
+              0,
+              volFilePaths.size(),
+              volFileDropdownEditMode))
+      {
+        volFileDropdownEditMode = !volFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 5,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Extract .SEC file"))
+      {
+        SecFile secFile = SecFile(secFilePaths.at(secFileIndex));
+        secFile.Parse();
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 5,
+                  40,
+                  buttonHeight},
+              "",
+              &secFileIndex,
+              0,
+              secFilePaths.size(),
+              secFileDropdownEditMode))
+      {
+        secFileDropdownEditMode = !secFileDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 6,
+                  buttonWidth,
+                  buttonHeight},
+              "#7#Load mission"))
+      {
+        mission = new Mission();
+        mission->Load(missions.at(missionIndex));
+      }
+
+      if (GuiValueBox(
+              Rectangle{
+                  20 + buttonWidth,
+                  20 + (buttonHeight + buttonOffset) * 6,
+                  40,
+                  buttonHeight},
+              "",
+              &missionIndex,
+              0,
+              missions.size(),
+              missionDropdownEditMode))
+      {
+        missionDropdownEditMode = !missionDropdownEditMode;
       }
     }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 2,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .WAD files"))
+    else
     {
-      for (int i = 0; i < wadFilePaths.size(); i++)
-      {
-        WadFile wadFile = WadFile(wadFilePaths.at(i));
-        wadFile.Extract();
-      }
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 3,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .MIS file"))
-    {
-      MisFile misFile = MisFile(misFilePaths.at(misFileIndex));
-      misFile.Parse();
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 3,
-                40,
-                buttonHeight},
-            "",
-            &misFileIndex,
-            0,
-            misFilePaths.size(),
-            misFileDropdownEditMode))
-    {
-      misFileDropdownEditMode = !misFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 4,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .VOL file"))
-    {
-      VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
-      volFile.Parse();
-      // auto polys = volFile.GetPolygons().at(63).GetVertices();
-      // auto tiles = volFile.GetPolygons().at(0).GetTiles();
-      // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
-      // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 4,
-                40,
-                buttonHeight},
-            "",
-            &volFileIndex,
-            0,
-            volFilePaths.size(),
-            volFileDropdownEditMode))
-    {
-      volFileDropdownEditMode = !volFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 5,
-                buttonWidth,
-                buttonHeight},
-            "#7#Extract .SEC file"))
-    {
-      SecFile secFile = SecFile(secFilePaths.at(secFileIndex));
-      secFile.Parse();
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 5,
-                40,
-                buttonHeight},
-            "",
-            &secFileIndex,
-            0,
-            secFilePaths.size(),
-            secFileDropdownEditMode))
-    {
-      secFileDropdownEditMode = !secFileDropdownEditMode;
-    }
-
-    if (GuiButton(
-            Rectangle{
-                20,
-                20 + (buttonHeight + buttonOffset) * 6,
-                buttonWidth,
-                buttonHeight},
-            "#7#Load mission"))
-    {
-      Mission mission;
-      mission.Load(missions.at(missionIndex));
-    }
-
-    if (GuiValueBox(
-            Rectangle{
-                20 + buttonWidth,
-                20 + (buttonHeight + buttonOffset) * 6,
-                40,
-                buttonHeight},
-            "",
-            &missionIndex,
-            0,
-            missions.size(),
-            missionDropdownEditMode))
-    {
-      missionDropdownEditMode = !missionDropdownEditMode;
+      mission->Update();
+      mission->Render();
     }
 
     EndDrawing();
   }
 
+  delete mission;
   CloseWindow();
   return 0;
 }

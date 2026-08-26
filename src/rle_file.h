@@ -18,6 +18,7 @@ public:
 private:
   Image image;
   std::string name;
+  std::vector<unsigned char> pixels;
   int size;
   int blockHeaderSize = 64;
   int blockFileNameSize = 32;

@@ -20,11 +20,39 @@ Tile::Tile(
       spriteName(spriteName),
       transformation(transformation)
 {
+  if (spriteName.at(0) == '-')
+  {
+    isVisible = false;
+    exportedSpriteName = spriteName.substr(1);
+  }
+  else
+  {
+    isVisible = true;
+    exportedSpriteName = spriteName.substr(0);
+  }
+
+  exportedSpriteName = Replace(exportedSpriteName, "BMP", "png");
+  exportedSpriteName = Replace(exportedSpriteName, "RLE", "png");
 }
 
 Tile::~Tile() = default;
 
-std::string Tile::GetSpriteName() const
+double Tile::GetX() const
 {
-  return spriteName;
+  return x;
+}
+
+double Tile::GetY() const
+{
+  return y;
+}
+
+std::string Tile::GetExportedSpriteName() const
+{
+  return exportedSpriteName;
+}
+
+bool Tile::IsVisible() const
+{
+  return isVisible;
 }

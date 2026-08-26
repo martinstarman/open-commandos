@@ -44,7 +44,7 @@ void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
 
   std::vector<char> palette = palettes.at(paletteIndex);
 
-  std::vector<unsigned char> pixels;
+  pixels.clear();
 
   for (int i = 0; i < pixelsBuffer.size(); i++)
   {
@@ -110,7 +110,7 @@ void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
     }
   }
 
-  image.data = &pixels[0];
+  image.data = pixels.data();
   image.width = width;
   image.height = height;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;

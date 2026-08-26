@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "utils.h"
+
 class Tile
 {
 public:
@@ -16,7 +18,10 @@ public:
       const std::string &spriteName,
       const std::string &transformation);
   ~Tile();
-  std::string GetSpriteName() const;
+  double GetX() const;
+  double GetY() const;
+  std::string GetExportedSpriteName() const;
+  bool IsVisible() const;
 
 private:
   double x;
@@ -28,4 +33,6 @@ private:
   double brightness;
   std::string spriteName;
   std::string transformation;
+  std::string exportedSpriteName;
+  bool isVisible;
 };
