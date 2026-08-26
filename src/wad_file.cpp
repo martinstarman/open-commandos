@@ -1,7 +1,6 @@
 #include "wad_file.h"
 
 WadFile::WadFile(const std::string &path)
-    : path(path)
 {
   TraceLog(LOG_INFO, ("FILE: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);
@@ -13,7 +12,7 @@ WadFile::~WadFile()
   wadFile.close();
 }
 
-void WadFile::Extract()
+void WadFile::Extract(const std::string &path)
 {
   std::vector<char> buffer;
   int offset = blockHeaderSize; // skip header block
@@ -48,11 +47,6 @@ void WadFile::Extract()
   offset += blockImagesCountSize;
   int imageFileNameSize = 32;
 
-  if (!std::filesystem::exists("export"))
-  {
-    std::filesystem::create_directories("export");
-  }
-
   while (offset < wadFileSize)
   {
     buffer.resize(imageFileNameSize);
@@ -69,7 +63,7 @@ void WadFile::Extract()
 
       BmpFile bmpFile = BmpFile();
       bmpFile.Load(buffer, palettes);
-      bmpFile.Export("export");
+      bmpFile.Export(path);
 
       offset += bmpFile.GetSize();
     }
@@ -81,7 +75,7 @@ void WadFile::Extract()
 
       RleFile rleFile = RleFile();
       rleFile.Load(buffer, palettes);
-      rleFile.Export("export");
+      rleFile.Export(path);
 
       offset += rleFile.GetSize();
     }

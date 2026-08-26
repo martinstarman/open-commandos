@@ -6,7 +6,6 @@
 
 #include "mis_file.h"
 #include "sec_file.h"
-#include "utils.h"
 #include "vol_file.h"
 
 class Mission
@@ -15,6 +14,7 @@ public:
   Mission();
   ~Mission();
   void Load(const std::string &name);
+  void Update();
   void Render();
 
 private:
@@ -22,4 +22,7 @@ private:
   VolFile *volFile;
   SecFile *secFile;
   std::map<std::string, Texture> textures;
+  int offsetX;
+  int offsetY;
+  void LoadTextures();
 };

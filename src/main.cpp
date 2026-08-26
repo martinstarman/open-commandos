@@ -394,6 +394,8 @@ int main()
   bool missionDropdownEditMode = false;
   Mission *mission = nullptr;
 
+  std::string wadFileExportPath = "export";
+
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
 
@@ -429,10 +431,15 @@ int main()
                   buttonHeight},
               "#7#Extract .WAD files"))
       {
+        if (!std::filesystem::exists(wadFileExportPath))
+        {
+          std::filesystem::create_directory(wadFileExportPath);
+        }
+
         for (int i = 0; i < wadFilePaths.size(); i++)
         {
           WadFile wadFile = WadFile(wadFilePaths.at(i));
-          wadFile.Extract();
+          wadFile.Extract(wadFileExportPath);
         }
       }
 
@@ -550,6 +557,7 @@ int main()
     }
     else
     {
+      mission->Update();
       mission->Render();
     }
 

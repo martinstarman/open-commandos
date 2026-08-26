@@ -1,7 +1,6 @@
 #pragma once
 
 #include <algorithm>
-#include <filesystem>
 #include <fstream>
 #include <raylib.h>
 #include <string>
@@ -15,10 +14,9 @@ class WadFile
 public:
   WadFile(const std::string &path);
   ~WadFile();
-  void Extract();
+  void Extract(const std::string &path);
 
 private:
-  std::string path;
   std::ifstream wadFile;
   int blockHeaderSize = 400;
   int blockPalettesCountSize = 4;
