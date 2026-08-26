@@ -92,7 +92,6 @@ void Mission::LoadTextures()
   {
     for (const auto &tile : polygon.GetTiles())
     {
-
       if (tile.IsVisible())
       {
         std::string exportedSpriteName = tile.GetExportedSpriteName();
