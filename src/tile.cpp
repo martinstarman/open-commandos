@@ -61,10 +61,10 @@ void Tile::Render(int cameraOffsetX, int cameraOffsetY) const
   if (isVisible)
   {
     Rectangle src = {
-        0.0f,
-        0.0f,
-        (float)texture.width * (flipX ? -1 : 1),
-        (float)texture.height * (flipY ? -1 : 1)};
+        (float)-offsetX,
+        (float)-offsetY,
+        (float)width * (flipX ? -1 : 1),
+        (float)height * (flipY ? -1 : 1)};
 
     Rectangle dest = {
         (float)x - cameraOffsetX,
