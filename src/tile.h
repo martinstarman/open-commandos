@@ -20,7 +20,7 @@ public:
       const std::string &transformation);
   ~Tile();
   void Load();
-  void Render(int offsetX, int offsetY) const;
+  void Render(int cameraOffsetX, int cameraOffsetY) const;
 
 private:
   double x;

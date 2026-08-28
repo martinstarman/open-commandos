@@ -52,23 +52,30 @@ void Tile::Load()
   if (isVisible)
   {
     texture = LoadTexture(("export/" + exportedSpriteName).c_str()); // TODO: load dir
+    SetTextureWrap(texture, TEXTURE_WRAP_REPEAT);
   }
 }
 
-void Tile::Render(int offsetX, int offsetY) const
+void Tile::Render(int cameraOffsetX, int cameraOffsetY) const
 {
   if (isVisible)
   {
-    Vector2 pos = {
-        (float)x - offsetX,
-        (float)y - offsetY};
-
     Rectangle src = {
         0.0f,
         0.0f,
         (float)texture.width * (flipX ? -1 : 1),
         (float)texture.height * (flipY ? -1 : 1)};
 
-    DrawTextureRec(texture, src, pos, WHITE);
+    Rectangle dest = {
+        (float)x - cameraOffsetX,
+        (float)y - cameraOffsetY,
+        (float)width,
+        (float)height};
+
+    Vector2 origin = {0.0f, 0.0f};
+
+    float rotation = 0;
+
+    DrawTexturePro(texture, src, dest, origin, rotation, WHITE);
   }
 }
