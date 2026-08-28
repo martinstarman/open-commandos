@@ -36,7 +36,7 @@ void Polygon::AddTile(Tile tile)
   tiles.push_back(tile);
 }
 
-std::vector<Tile> Polygon::GetTiles() const
+std::vector<Tile> &Polygon::GetTiles()
 {
   assert(numberOfTiles == tiles.size());
   return tiles;

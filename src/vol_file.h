@@ -14,7 +14,7 @@ public:
   VolFile(const std::string &path);
   ~VolFile();
   void Parse() override;
-  std::vector<Polygon> GetPolygons();
+  std::vector<Polygon> &GetPolygons();
 
 private:
   Node *root;

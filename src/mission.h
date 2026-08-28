@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <raylib.h>
 #include <string>
 
@@ -21,8 +20,7 @@ private:
   MisFile *misFile;
   VolFile *volFile;
   SecFile *secFile;
-  std::map<std::string, Texture> textures;
   int offsetX;
   int offsetY;
-  void LoadTextures();
+  void LoadTiles();
 };

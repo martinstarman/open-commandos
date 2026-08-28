@@ -231,7 +231,7 @@ void VolFile::ReadComment()
   ReadWhiteSpaces();
 }
 
-std::vector<Polygon> VolFile::GetPolygons()
+std::vector<Polygon> &VolFile::GetPolygons()
 {
   return polygons;
 }

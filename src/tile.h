@@ -1,5 +1,6 @@
 #pragma once
 
+#include <raylib.h>
 #include <string>
 
 #include "utils.h"
@@ -18,10 +19,8 @@ public:
       const std::string &spriteName,
       const std::string &transformation);
   ~Tile();
-  double GetX() const;
-  double GetY() const;
-  std::string GetExportedSpriteName() const;
-  bool IsVisible() const;
+  void Load();
+  void Render(int offsetX, int offsetY) const;
 
 private:
   double x;
@@ -35,4 +34,5 @@ private:
   std::string transformation;
   std::string exportedSpriteName;
   bool isVisible;
+  Texture texture;
 };

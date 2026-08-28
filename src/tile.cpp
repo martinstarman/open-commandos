@@ -18,7 +18,8 @@ Tile::Tile(
       offsetY(offsetY),
       brightness(brightness),
       spriteName(spriteName),
-      transformation(transformation)
+      transformation(transformation),
+      texture({})
 {
   if (spriteName.at(0) == '-')
   {
@@ -35,24 +36,28 @@ Tile::Tile(
   exportedSpriteName = Replace(exportedSpriteName, "RLE", "png");
 }
 
-Tile::~Tile() = default;
-
-double Tile::GetX() const
+Tile::~Tile()
 {
-  return x;
+  if (IsTextureValid(texture))
+  {
+    UnloadTexture(texture);
+  }
 }
 
-double Tile::GetY() const
+void Tile::Load()
 {
-  return y;
+  if (isVisible)
+  {
+    texture = LoadTexture(("export/" + exportedSpriteName).c_str()); // TODO: load dir
+  }
 }
 
-std::string Tile::GetExportedSpriteName() const
+void Tile::Render(int offsetX, int offsetY) const
 {
-  return exportedSpriteName;
-}
-
-bool Tile::IsVisible() const
-{
-  return isVisible;
+  if (isVisible)
+  {
+    int renderX = (int)x - offsetX;
+    int renderY = (int)y - offsetY;
+    DrawTexture(texture, renderX, renderY, WHITE);
+  }
 }

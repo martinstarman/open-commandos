@@ -22,7 +22,7 @@ public:
   void AddPoint(double x, double y);
   std::vector<std::tuple<double, double>> GetVertices() const;
   void AddTile(Tile tile);
-  std::vector<Tile> GetTiles() const;
+  std::vector<Tile> &GetTiles();
 
 private:
   std::string name;
