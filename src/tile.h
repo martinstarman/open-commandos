@@ -35,4 +35,6 @@ private:
   std::string exportedSpriteName;
   bool isVisible;
   Texture texture;
+  bool flipX;
+  bool flipY;
 };

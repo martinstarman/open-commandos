@@ -34,6 +34,9 @@ Tile::Tile(
 
   exportedSpriteName = Replace(exportedSpriteName, "BMP", "png");
   exportedSpriteName = Replace(exportedSpriteName, "RLE", "png");
+
+  flipX = transformation.at(0) == 'X';
+  flipY = transformation.at(1) == 'Y';
 }
 
 Tile::~Tile()
@@ -56,8 +59,16 @@ void Tile::Render(int offsetX, int offsetY) const
 {
   if (isVisible)
   {
-    int renderX = (int)x - offsetX;
-    int renderY = (int)y - offsetY;
-    DrawTexture(texture, renderX, renderY, WHITE);
+    Vector2 pos = {
+        (float)x - offsetX,
+        (float)y - offsetY};
+
+    Rectangle src = {
+        0.0f,
+        0.0f,
+        (float)texture.width * (flipX ? -1 : 1),
+        (float)texture.height * (flipY ? -1 : 1)};
+
+    DrawTextureRec(texture, src, pos, WHITE);
   }
 }
