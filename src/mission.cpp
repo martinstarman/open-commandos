@@ -1,7 +1,9 @@
 #include "mission.h"
 
 Mission::Mission()
-    : misFile(nullptr),
+    : width(0),
+      height(0),
+      misFile(nullptr),
       volFile(nullptr),
       secFile(nullptr),
       offsetX(0),
@@ -37,6 +39,28 @@ void Mission::Update()
   {
     offsetY = offsetY + 5;
   }
+
+  if (offsetX < 0)
+  {
+    offsetX = 0;
+  }
+
+  // TODO: remove constants
+  if (offsetX > width - 800)
+  {
+    offsetX = width - 800;
+  }
+
+  if (offsetY < 0)
+  {
+    offsetY = 0;
+  }
+
+  // TODO: remove constants
+  if (offsetY > height - 600)
+  {
+    offsetY = height - 600;
+  }
 }
 
 void Mission::Load(const std::string &name)
@@ -53,6 +77,13 @@ void Mission::Load(const std::string &name)
   volFile = new VolFile("DATOS/MISIONES/" + volFileName);
   volFile->Parse();
 
+  std::vector<double> mapDimensions = volFile->GetRoot()
+                                          ->GetNode("MAPDIMXY")
+                                          ->GetListOfNumbers();
+
+  width = mapDimensions.at(0);
+  height = mapDimensions.at(1);
+
   std::string secFileName = misFile->GetRoot()
                                 ->GetNode(".FASE" + name)
                                 ->GetNode(".DATOSFICHEROSMISION")
@@ -65,9 +96,9 @@ void Mission::Load(const std::string &name)
   LoadTiles();
 }
 
-void Mission::Render()
+void Mission::Render() const
 {
-  for (auto &polygon : volFile->GetPolygons())
+  for (auto &polygon : volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons())
   {
     for (const auto &tile : polygon.GetTiles())
     {
@@ -78,11 +109,21 @@ void Mission::Render()
 
 void Mission::LoadTiles()
 {
-  for (auto &polygon : volFile->GetPolygons())
+  for (auto &polygon : volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons())
   {
     for (auto &tile : polygon.GetTiles())
     {
       tile.Load();
     }
   }
+}
+
+int Mission::GetWidth() const
+{
+  return width;
+}
+
+int Mission::GetHeight() const
+{
+  return height;
 }

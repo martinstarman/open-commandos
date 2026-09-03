@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 #include <string>
+#include <vector>
 
 #include "mis_file.h"
 #include "sec_file.h"
@@ -14,9 +15,13 @@ public:
   ~Mission();
   void Load(const std::string &name);
   void Update();
-  void Render();
+  void Render() const;
+  int GetWidth() const;
+  int GetHeight() const;
 
 private:
+  int width;
+  int height;
   MisFile *misFile;
   VolFile *volFile;
   SecFile *secFile;

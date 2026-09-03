@@ -3,7 +3,10 @@
 #include <cassert>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
+
+#include "polygon.h"
 
 enum NodeTag
 {
@@ -15,6 +18,7 @@ enum NodeTag
   ListOfNodes,
   Ability,
   ListOfAbilities,
+  ListOfPolygons,
 };
 
 class Node
@@ -38,6 +42,8 @@ public:
   Node *GetAbility(const std::string &key) const;
   void SetListOfAbilities(std::vector<std::string> value);
   std::vector<std::string> GetListOfAbilities() const;
+  void SetListOfPolygons(std::vector<Polygon> value);
+  std::vector<Polygon> &GetListOfPolygons();
 
 private:
   NodeTag tag;
@@ -48,4 +54,5 @@ private:
   std::vector<std::vector<double>> listOfNumberLists;
   std::vector<Node *> listOfNodes;
   std::vector<std::string> listOfAbilities;
+  std::vector<Polygon> listOfPolygons;
 };

@@ -73,6 +73,7 @@ Node *VolFile::ReadMapDimensions()
 Node *VolFile::ReadMapPolygons()
 {
   Node *node = new Node();
+  std::vector<Polygon> polygons;
 
   ReadUntil('{');
 
@@ -196,6 +197,8 @@ Node *VolFile::ReadMapPolygons()
     }
   }
 
+  node->SetListOfPolygons(polygons);
+
   return node;
 }
 
@@ -231,7 +234,7 @@ void VolFile::ReadComment()
   ReadWhiteSpaces();
 }
 
-std::vector<Polygon> &VolFile::GetPolygons()
+Node *VolFile::GetRoot()
 {
-  return polygons;
+  return root;
 }

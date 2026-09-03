@@ -480,10 +480,6 @@ int main()
       {
         VolFile volFile = VolFile(volFilePaths.at(volFileIndex));
         volFile.Parse();
-        // auto polys = volFile.GetPolygons().at(63).GetVertices();
-        // auto tiles = volFile.GetPolygons().at(0).GetTiles();
-        // TraceLog(LOG_INFO, std::to_string(polys.size()).c_str());
-        // TraceLog(LOG_INFO, std::to_string(tiles.size()).c_str());
       }
 
       if (GuiValueBox(

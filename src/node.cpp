@@ -104,3 +104,14 @@ std::vector<std::string> Node::GetListOfAbilities() const
 {
   return listOfAbilities;
 }
+
+void Node::SetListOfPolygons(std::vector<Polygon> value)
+{
+  listOfPolygons = std::move(value);
+  tag = NodeTag::ListOfPolygons;
+}
+
+std::vector<Polygon> &Node::GetListOfPolygons()
+{
+  return listOfPolygons;
+}

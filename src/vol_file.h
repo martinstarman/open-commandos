@@ -14,11 +14,10 @@ public:
   VolFile(const std::string &path);
   ~VolFile();
   void Parse() override;
-  std::vector<Polygon> &GetPolygons();
+  Node *GetRoot();
 
 private:
   Node *root;
-  std::vector<Polygon> polygons;
   bool IsClosingBracket(char c) const;
   bool IsSemicolon(char c) const;
   Node *ReadNode();
