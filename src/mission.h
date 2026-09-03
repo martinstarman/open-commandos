@@ -1,10 +1,12 @@
 #pragma once
 
+#include <algorithm>
 #include <raylib.h>
 #include <string>
 #include <vector>
 
 #include "mis_file.h"
+#include "polygon.h"
 #include "sec_file.h"
 #include "vol_file.h"
 
@@ -27,5 +29,6 @@ private:
   SecFile *secFile;
   int offsetX;
   int offsetY;
+  std::vector<Polygon *> sortedPolygons;
   void LoadTiles();
 };

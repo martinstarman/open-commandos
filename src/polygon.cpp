@@ -41,3 +41,8 @@ std::vector<Tile> &Polygon::GetTiles()
   assert(numberOfTiles == tiles.size());
   return tiles;
 }
+
+double Polygon::GetCenterZ() const
+{
+  return centerZ;
+}

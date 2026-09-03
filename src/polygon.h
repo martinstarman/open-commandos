@@ -23,6 +23,7 @@ public:
   std::vector<std::tuple<double, double>> GetVertices() const;
   void AddTile(Tile tile);
   std::vector<Tile> &GetTiles();
+  double GetCenterZ() const;
 
 private:
   std::string name;

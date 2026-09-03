@@ -98,9 +98,9 @@ void Mission::Load(const std::string &name)
 
 void Mission::Render() const
 {
-  for (auto &polygon : volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons())
+  for (auto *polygon : sortedPolygons)
   {
-    for (const auto &tile : polygon.GetTiles())
+    for (const auto &tile : polygon->GetTiles())
     {
       tile.Render(offsetX, offsetY);
     }
@@ -109,13 +109,22 @@ void Mission::Render() const
 
 void Mission::LoadTiles()
 {
-  for (auto &polygon : volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons())
+  std::vector<Polygon> &polygons = volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons();
+
+  sortedPolygons.reserve(polygons.size());
+
+  for (auto &polygon : polygons)
   {
     for (auto &tile : polygon.GetTiles())
     {
       tile.Load();
     }
+
+    sortedPolygons.push_back(&polygon);
   }
+
+  std::sort(sortedPolygons.begin(), sortedPolygons.end(), [](const Polygon *a, const Polygon *b) -> bool
+            { return a->GetCenterZ() < b->GetCenterZ(); });
 }
 
 int Mission::GetWidth() const
