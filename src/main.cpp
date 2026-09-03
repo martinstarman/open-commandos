@@ -555,6 +555,21 @@ int main()
     {
       mission->Update();
       mission->Render();
+
+      // TODO: move somewhere else
+      // TODO: set offset to 0
+      if (IsKeyPressed(KEY_F1))
+      {
+        RenderTexture2D screenshot = LoadRenderTexture(mission->GetWidth(), mission->GetHeight());
+        BeginTextureMode(screenshot);
+        ClearBackground(RAYWHITE);
+        mission->Render();
+        EndTextureMode();
+        Image img = LoadImageFromTexture(screenshot.texture);
+        ImageFlipVertical(&img);
+        ExportImage(img, "screenshot.png");
+        UnloadImage(img);
+      }
     }
 
     EndDrawing();
