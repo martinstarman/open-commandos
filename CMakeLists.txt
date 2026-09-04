@@ -10,6 +10,8 @@ target_sources(open-commandos
   PRIVATE
   src/area.cpp
   src/bmp_file.cpp
+  src/bracket_file.cpp
+  src/dat_file.cpp
   src/dir_file.cpp
   src/main.cpp
   src/mis_file.cpp

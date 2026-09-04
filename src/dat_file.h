@@ -5,9 +5,9 @@
 
 #include "bracket_file.h"
 
-class MisFile : public BracketFile
+class DatFile : public BracketFile
 {
 public:
-  MisFile(const std::string &path);
-  ~MisFile();
+  DatFile(const std::string &path);
+  ~DatFile();
 };

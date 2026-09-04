@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "dat_file.h"
 #include "dir_file.h"
 #include "mis_file.h"
 #include "mission.h"
@@ -549,6 +550,34 @@ int main()
               missionDropdownEditMode))
       {
         missionDropdownEditMode = !missionDropdownEditMode;
+      }
+
+      if (GuiButton(
+              Rectangle{
+                  20,
+                  20 + (buttonHeight + buttonOffset) * 7,
+                  40,
+                  buttonHeight},
+              "#7#Extract .DAT file"))
+      {
+        DatFile datFile = DatFile("DATOS/MISIONES/MISIONES.DAT");
+        datFile.Parse();
+        int missionNo = datFile.GetRoot()
+                            ->GetNode(".DATOSMISIONES")
+                            ->GetNode(".LISTA")
+                            ->GetListOfNodes()
+                            .at(8)
+                            ->GetNode(".NUMMISION")
+                            ->GetNumber();
+        TraceLog(LOG_INFO, std::to_string(missionNo).c_str());
+        std::string misName = datFile.GetRoot()
+                                  ->GetNode(".DATOSMISIONES")
+                                  ->GetNode(".LISTA")
+                                  ->GetListOfNodes()
+                                  .at(8)
+                                  ->GetNode(".FICHEROMISION")
+                                  ->GetString();
+        TraceLog(LOG_INFO, misName.c_str());
       }
     }
     else
