@@ -24,7 +24,7 @@ void TextFile::Parse()
 {
 }
 
-char TextFile::Peek()
+char TextFile::Peek() const
 {
   return buffer.at(pointer + 1);
 }
@@ -41,14 +41,19 @@ void TextFile::Unget()
 
 bool TextFile::IsNumber(char c) const
 {
-  return c == '-' ||
-         c == '.' ||
-         (c >= '0' && c <= '9');
+  return c == '-' || (c >= '0' && c <= '9');
 }
 
 bool TextFile::IsString(char c) const
 {
-  return c >= 'A' && c <= 'Z';
+  return (c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
+         (c == '*'); // MAPA0012.MIS
+}
+
+bool TextFile::IsOpeningBracket(char c) const
+{
+  return c == '[';
 }
 
 void TextFile::ReadUntil(char c)
@@ -79,7 +84,7 @@ double TextFile::ReadNumber()
   ReadWhiteSpaces();
   std::string string;
 
-  while (IsNumber(Peek()))
+  while (IsNumber(Peek()) || Peek() == '.')
   {
     string.push_back(Get());
   }

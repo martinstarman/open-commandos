@@ -17,11 +17,12 @@ protected:
   std::vector<char> buffer;
   int pointer;
   void Open(const std::string &path);
-  char Peek();
+  char Peek() const;
   char Get();
   void Unget();
   bool IsNumber(char c) const;
   bool IsString(char c) const;
+  bool IsOpeningBracket(char c) const;
   void ReadUntil(char c);
   int ReadWhiteSpaces();
   double ReadNumber();

@@ -7,37 +7,25 @@
 #include <vector>
 
 #include "node.h"
+#include "text_file.h"
 
-class MisFile
+class MisFile : public TextFile
 {
 public:
   MisFile(const std::string &path);
   ~MisFile();
-  void Parse();
+  void Parse() override;
   Node *GetRoot();
 
 private:
-  std::ifstream misFile;
-  std::vector<char> buffer;
-  int pointer;
-  char Peek();
-  char Get();
-  void Unget();
   Node *root;
-  bool IsOpeningBracket(char c) const;
-  bool IsString(char c) const;
-  bool IsNumber(char c) const;
-  int ReadWhiteSpaces();
-  std::string ReadKeyword();
   Node *ReadValue();
   Node *ReadNode();
-  std::string ReadString();
-  double ReadNumber();
+  double ReadNumber(); // TODO: unify with TextFile
   std::vector<double> ReadListOfNumbers();
   std::vector<std::vector<double>> ReadListOfNumberLists();
   std::vector<Node *> ReadListOfNodes();
   Node *ReadAbility();
   std::vector<std::string> ReadListOfAbilities();
   void ReadClosingBracket();
-  void ReadUntil(char c);
 };

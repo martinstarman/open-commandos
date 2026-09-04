@@ -1,29 +1,22 @@
 #include "mis_file.h"
 
 MisFile::MisFile(const std::string &path)
-    : misFile(path),
-      root(new Node()),
-      pointer(-1)
+    : root(new Node())
 {
-  misFile.seekg(0, std::ios_base::end);
-  std::streampos fileSize = misFile.tellg();
-  buffer.resize(fileSize);
-  misFile.seekg(0, std::ios_base::beg);
-  misFile.read(&buffer[0], fileSize);
-
   TraceLog(LOG_INFO, ("FILE: Opening .mis file " + path).c_str());
+  Open(path);
 }
 
 MisFile::~MisFile()
 {
   TraceLog(LOG_INFO, "    > Done, closing .mis file");
-  misFile.close();
+  file.close();
   delete root;
 }
 
 void MisFile::Parse()
 {
-  std::string keyword = ReadKeyword();
+  std::string keyword = ReadString();
   Node *value = ReadValue();
   root->SetNode(keyword, value);
 }
@@ -31,65 +24,6 @@ void MisFile::Parse()
 Node *MisFile::GetRoot()
 {
   return root;
-}
-
-char MisFile::Peek()
-{
-  return buffer.at(pointer + 1);
-}
-
-char MisFile::Get()
-{
-  return buffer.at(++pointer);
-}
-
-void MisFile::Unget()
-{
-  pointer--;
-}
-
-bool MisFile::IsOpeningBracket(char c) const
-{
-  return c == '[';
-}
-
-bool MisFile::IsString(char c) const
-{
-  return (c >= 'a' && c <= 'z') ||
-         (c >= 'A' && c <= 'Z') ||
-         (c == '*'); // MAPA0012.MIS
-}
-
-bool MisFile::IsNumber(char c) const
-{
-  return c == '-' || (c >= '0' && c <= '9');
-}
-
-int MisFile::ReadWhiteSpaces()
-{
-  int i = 0;
-
-  while (isspace(Peek()))
-  {
-    i++;
-    Get();
-  }
-
-  return i;
-}
-
-std::string MisFile::ReadKeyword()
-{
-  ReadWhiteSpaces();
-  std::string keyword;
-
-  while (!isspace(Peek()))
-  {
-    keyword.push_back(Get());
-  }
-
-  ReadWhiteSpaces();
-  return keyword;
 }
 
 Node *MisFile::ReadValue()
@@ -200,7 +134,7 @@ Node *MisFile::ReadNode()
     }
     else
     {
-      std::string keyword = ReadKeyword();
+      std::string keyword = ReadString();
       Node *value = ReadValue();
       node->SetNode(keyword, value);
     }
@@ -208,19 +142,6 @@ Node *MisFile::ReadNode()
 
   ReadClosingBracket();
   return node;
-}
-
-std::string MisFile::ReadString()
-{
-  ReadWhiteSpaces();
-  std::string string;
-
-  while (!isspace(Peek()))
-  {
-    string.push_back(Get());
-  }
-
-  return string;
 }
 
 double MisFile::ReadNumber()
@@ -316,14 +237,4 @@ std::vector<std::string> MisFile::ReadListOfAbilities()
 
   ReadClosingBracket();
   return listOfAbilities;
-}
-
-void MisFile::ReadUntil(char c)
-{
-  while (Peek() != c)
-  {
-    Get();
-  }
-
-  Get();
 }
