@@ -15,7 +15,7 @@ class Mission
 public:
   Mission();
   ~Mission();
-  void Load(const std::string &name);
+  void Load(const std::string &name, const std::string &faseToken);
   void Update();
   void Render() const;
   int GetWidth() const;

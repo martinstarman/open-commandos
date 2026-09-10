@@ -63,13 +63,13 @@ void Mission::Update()
   }
 }
 
-void Mission::Load(const std::string &name)
+void Mission::Load(const std::string &name, const std::string &faseToken)
 {
-  misFile = new MisFile("DATOS/MISIONES/MAPA" + name + ".MIS");
+  misFile = new MisFile("DATOS/MISIONES/" + name);
   misFile->Parse();
 
   std::string volFileName = misFile->GetRoot()
-                                ->GetNode(".FASE" + name)
+                                ->GetNode("." + faseToken)
                                 ->GetNode(".DATOSFICHEROSMISION")
                                 ->GetNode(".VOLUMENES")
                                 ->GetString();
@@ -85,7 +85,7 @@ void Mission::Load(const std::string &name)
   height = mapDimensions.at(1);
 
   std::string secFileName = misFile->GetRoot()
-                                ->GetNode(".FASE" + name)
+                                ->GetNode("." + faseToken)
                                 ->GetNode(".DATOSFICHEROSMISION")
                                 ->GetNode(".SECTORES")
                                 ->GetString();

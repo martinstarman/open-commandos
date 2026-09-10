@@ -9,6 +9,7 @@
 #include "dir_file.h"
 #include "mis_file.h"
 #include "mission.h"
+#include "node.h"
 #include "sec_file.h"
 #include "vol_file.h"
 #include "wad_file.h"
@@ -348,32 +349,6 @@ std::vector<std::string> secFilePaths = {
     "DATOS/MISIONES/MAPA0024.SEC",
 };
 
-std::vector<std::string> missions = {
-    "0000",
-    "0001",
-    "0002",
-    "0003",
-    "0004",
-    "0005",
-    "0006",
-    "0007",
-    "0008",
-    "0009",
-    "0010",
-    "0012",
-    "0013",
-    "0015",
-    "0016",
-    "0017",
-    "0018",
-    "0019",
-    "0020",
-    "0021",
-    "0022",
-    "0023",
-    "0024",
-};
-
 int main()
 {
   const int windowWidth = 800;
@@ -391,11 +366,16 @@ int main()
   int secFileIndex = 0;
   bool secFileDropdownEditMode = false;
 
-  int missionIndex = 0;
-  bool missionDropdownEditMode = false;
   Mission *mission = nullptr;
 
   std::string wadFileExportPath = "export";
+
+  DatFile datFile = DatFile("DATOS/MISIONES/MISIONES.DAT");
+  datFile.Parse();
+  std::vector<Node *> missionNodes = datFile.GetRoot()
+                                         ->GetNode(".DATOSMISIONES")
+                                         ->GetNode(".LISTA")
+                                         ->GetListOfNodes();
 
   InitWindow(windowWidth, windowHeight, "openCommandos");
   SetTargetFPS(60);
@@ -525,59 +505,22 @@ int main()
         secFileDropdownEditMode = !secFileDropdownEditMode;
       }
 
-      if (GuiButton(
-              Rectangle{
-                  20,
-                  20 + (buttonHeight + buttonOffset) * 6,
-                  buttonWidth,
-                  buttonHeight},
-              "#7#Load mission"))
+      // TODO: do not skip tutorials
+      for (size_t i = 6; i < missionNodes.size(); ++i)
       {
-        mission = new Mission();
-        mission->Load(missions.at(missionIndex));
-      }
-
-      if (GuiValueBox(
-              Rectangle{
-                  20 + buttonWidth,
-                  20 + (buttonHeight + buttonOffset) * 6,
-                  40,
-                  buttonHeight},
-              "",
-              &missionIndex,
-              0,
-              missions.size(),
-              missionDropdownEditMode))
-      {
-        missionDropdownEditMode = !missionDropdownEditMode;
-      }
-
-      if (GuiButton(
-              Rectangle{
-                  20,
-                  20 + (buttonHeight + buttonOffset) * 7,
-                  40,
-                  buttonHeight},
-              "#7#Extract .DAT file"))
-      {
-        DatFile datFile = DatFile("DATOS/MISIONES/MISIONES.DAT");
-        datFile.Parse();
-        int missionNo = datFile.GetRoot()
-                            ->GetNode(".DATOSMISIONES")
-                            ->GetNode(".LISTA")
-                            ->GetListOfNodes()
-                            .at(8)
-                            ->GetNode(".NUMMISION")
-                            ->GetNumber();
-        TraceLog(LOG_INFO, std::to_string(missionNo).c_str());
-        std::string misName = datFile.GetRoot()
-                                  ->GetNode(".DATOSMISIONES")
-                                  ->GetNode(".LISTA")
-                                  ->GetListOfNodes()
-                                  .at(8)
-                                  ->GetNode(".FICHEROMISION")
-                                  ->GetString();
-        TraceLog(LOG_INFO, misName.c_str());
+        if (GuiButton(
+                Rectangle{
+                    60 + buttonWidth + buttonOffset,
+                    20 + (float)((i - 6) * buttonHeight),
+                    buttonWidth,
+                    buttonHeight},
+                ("#7#Load mission " + std::to_string(i - 5)).c_str()))
+        {
+          std::string misFileName = missionNodes.at(i)->GetNode(".FICHEROMISION")->GetString();
+          std::string faseToken = missionNodes.at(i)->GetNode(".TOKEN")->GetString();
+          mission = new Mission();
+          mission->Load(misFileName, faseToken);
+        }
       }
     }
     else
