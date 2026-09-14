@@ -105,6 +105,27 @@ void Mission::Render() const
       tile.Render(offsetX, offsetY);
     }
   }
+  if (g_debug)
+  {
+    RenderDebug();
+  }
+}
+
+void Mission::RenderDebug() const
+{
+  int lines = 0;
+
+  for (auto *polygon : sortedPolygons)
+  {
+    for (const auto &tile : polygon->GetTiles())
+    {
+      if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), tile.GetRect(offsetX, offsetY)))
+      {
+        DrawText(tile.GetSpriteName().c_str(), GetMouseX() + 10, GetMouseY() + 10 + lines * 12, 10, YELLOW);
+        lines++;
+      }
+    }
+  }
 }
 
 void Mission::LoadTiles()

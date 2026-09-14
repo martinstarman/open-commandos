@@ -79,3 +79,22 @@ void Tile::Render(int cameraOffsetX, int cameraOffsetY) const
     DrawTexturePro(texture, src, dest, origin, rotation, WHITE);
   }
 }
+
+const std::string &Tile::GetSpriteName() const
+{
+  return spriteName;
+}
+
+const Rectangle Tile::GetRect(int cameraOffsetX, int cameraOffsetY) const
+{
+  return {
+      (float)x - cameraOffsetX,
+      (float)y - cameraOffsetY,
+      (float)width,
+      (float)height};
+}
+
+const bool Tile::IsVisible() const
+{
+  return isVisible;
+}

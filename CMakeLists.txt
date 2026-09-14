@@ -13,6 +13,7 @@ target_sources(open-commandos
   src/bracket_file.cpp
   src/dat_file.cpp
   src/dir_file.cpp
+  src/globals.cpp
   src/main.cpp
   src/mis_file.cpp
   src/mission.cpp
