@@ -76,6 +76,25 @@ void Tile::Render(int cameraOffsetX, int cameraOffsetY) const
 
     float rotation = 0;
 
-    DrawTexturePro(texture, src, dest, origin, rotation, WHITE);
+    if (brightness < 0)
+    {
+      float factor = (float)(20 + brightness) / 20.0f;
+      unsigned char channel = (unsigned char)(255 * factor);
+      Color tint = {channel, channel, channel, 255};
+
+      DrawTexturePro(texture, src, dest, origin, rotation, tint);
+    }
+    else
+    {
+      DrawTexturePro(texture, src, dest, origin, rotation, WHITE);
+
+      if (brightness > 0)
+      {
+        unsigned char alpha = (unsigned char)(255 * (brightness / 20.0f));
+        Color overlay = {255, 255, 255, alpha};
+
+        DrawRectangle((int)dest.x, (int)dest.y, (int)dest.width, (int)dest.height, overlay);
+      }
+    }
   }
 }
