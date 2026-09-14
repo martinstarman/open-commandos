@@ -42,6 +42,16 @@ std::vector<Tile> &Polygon::GetTiles()
   return tiles;
 }
 
+double Polygon::GetCenterX() const
+{
+  return centerX;
+}
+
+double Polygon::GetCenterY() const
+{
+  return centerY;
+}
+
 double Polygon::GetCenterZ() const
 {
   return centerZ;

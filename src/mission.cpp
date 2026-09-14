@@ -113,16 +113,42 @@ void Mission::Render() const
 
 void Mission::RenderDebug() const
 {
-  int lines = 0;
-
-  for (auto *polygon : sortedPolygons)
+  // tile sprite name
   {
-    for (const auto &tile : polygon->GetTiles())
+    int lines = 0;
+
+    for (auto *polygon : sortedPolygons)
     {
-      if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), tile.GetRect(offsetX, offsetY)))
+      for (const auto &tile : polygon->GetTiles())
       {
-        DrawText(tile.GetSpriteName().c_str(), GetMouseX() + 10, GetMouseY() + 10 + lines * 12, 10, YELLOW);
-        lines++;
+        if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), tile.GetRect(offsetX, offsetY)))
+        {
+          DrawText(tile.GetSpriteName().c_str(), GetMouseX() + 10, GetMouseY() + 10 + lines * 12, 10, YELLOW);
+          lines++;
+        }
+      }
+    }
+  }
+
+  // polygons
+  {
+    for (auto *polygon : sortedPolygons)
+    {
+      std::vector<std::tuple<double, double>> vertices = polygon->GetVertices();
+      double centerX = polygon->GetCenterX();
+      double centerY = polygon->GetCenterY();
+
+      for (size_t i = 0; i < vertices.size(); ++i)
+      {
+        auto [x1, y1] = vertices.at(i);
+        auto [x2, y2] = vertices.at((i + 1) % vertices.size());
+
+        DrawLine(
+            (int)(centerX + x1) - offsetX,
+            (int)((centerY + y1) * g_sin40) - offsetY,
+            (int)(centerX + x2) - offsetX,
+            (int)((centerY + y2) * g_sin40) - offsetY,
+            YELLOW);
       }
     }
   }

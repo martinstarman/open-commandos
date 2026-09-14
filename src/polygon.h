@@ -23,6 +23,8 @@ public:
   std::vector<std::tuple<double, double>> GetVertices() const;
   void AddTile(Tile tile);
   std::vector<Tile> &GetTiles();
+  double GetCenterX() const;
+  double GetCenterY() const;
   double GetCenterZ() const;
 
 private:
