@@ -21,6 +21,9 @@ public:
   ~Tile();
   void Load();
   void Render(int cameraOffsetX, int cameraOffsetY) const;
+  const std::string &GetSpriteName() const;
+  const Rectangle GetRect(int cameraOffsetX, int cameraOffsetY) const;
+  const bool IsVisible() const;
 
 private:
   double x;

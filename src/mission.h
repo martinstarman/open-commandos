@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "globals.h"
 #include "mis_file.h"
 #include "polygon.h"
 #include "sec_file.h"
@@ -18,6 +19,7 @@ public:
   void Load(const std::string &name, const std::string &faseToken);
   void Update();
   void Render() const;
+  void RenderDebug() const;
   int GetWidth() const;
   int GetHeight() const;
 

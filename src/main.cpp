@@ -7,6 +7,7 @@
 
 #include "dat_file.h"
 #include "dir_file.h"
+#include "globals.h"
 #include "mis_file.h"
 #include "mission.h"
 #include "node.h"
@@ -382,6 +383,11 @@ int main()
 
   while (!WindowShouldClose())
   {
+    if (IsKeyPressed(KEY_F1))
+    {
+      g_debug = !g_debug;
+    }
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
