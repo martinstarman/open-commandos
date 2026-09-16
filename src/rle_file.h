@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -13,7 +14,9 @@ public:
   ~RleFile();
   void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   void Export(std::string path);
+  Texture *GetTexture();
   int GetSize();
+  const std::string &GetName() const;
 
 private:
   Image image;

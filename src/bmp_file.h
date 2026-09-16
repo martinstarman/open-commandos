@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -13,7 +14,9 @@ public:
   ~BmpFile();
   void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   void Export(std::string path);
+  Texture* GetTexture();
   int GetSize();
+  const std::string &GetName() const;
   int blockHeaderSize = 64;
   int blockFileNameSize = 32;
   int blockPixelsCountSize = 8;

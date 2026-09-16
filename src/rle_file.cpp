@@ -13,6 +13,7 @@ void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
 
   std::vector<char> nameBuffer(buffer.begin() + offset, buffer.begin() + offset + blockFileNameSize);
   name = std::string(nameBuffer.begin(), nameBuffer.end());
+  name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
 
   offset += blockFileNameSize;
 
@@ -113,6 +114,7 @@ void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
   image.data = pixels.data();
   image.width = width;
   image.height = height;
+  image.mipmaps = 1;
   image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 
   size = blockHeaderSize +
@@ -129,7 +131,19 @@ void RleFile::Export(std::string path)
   ExportImage(image, imagePath.c_str());
 }
 
+Texture *RleFile::GetTexture()
+{
+  Texture *texture = new Texture(LoadTextureFromImage(image));
+  SetTextureWrap(*texture, TEXTURE_WRAP_REPEAT);
+  return texture;
+}
+
 int RleFile::GetSize()
 {
   return size;
+}
+
+const std::string &RleFile::GetName() const
+{
+  return name;
 }

@@ -6,6 +6,7 @@ Mission::Mission()
       misFile(nullptr),
       volFile(nullptr),
       secFile(nullptr),
+      wadFile(nullptr),
       offsetX(0),
       offsetY(0)
 {
@@ -16,6 +17,13 @@ Mission::~Mission()
   delete misFile;
   delete secFile;
   delete volFile;
+  delete wadFile;
+
+  for (auto const &[_, texture] : textures)
+  {
+    UnloadTexture(*texture);
+    delete texture;
+  }
 }
 
 void Mission::Update()
@@ -93,7 +101,10 @@ void Mission::Load(const std::string &name, const std::string &faseToken)
   secFile = new SecFile("DATOS/MISIONES/" + secFileName);
   secFile->Parse();
 
-  LoadTiles();
+  wadFile = new WadFile("DATOS/RECURSOS/BMPS/MAP/" + faseToken + ".WAD");
+  textures = wadFile->Load();
+
+  SortPolygons();
 }
 
 void Mission::Render() const
@@ -102,7 +113,26 @@ void Mission::Render() const
   {
     for (const auto &tile : polygon->GetTiles())
     {
-      tile.Render(offsetX, offsetY);
+      if (tile.IsVisible())
+      {
+        Texture *texture = textures.at(tile.GetSpriteName());
+
+        Rectangle src = {
+            tile.IsFlippedX() ? (float)texture->width - (float)tile.GetWidth() - (float)tile.GetOffsetX() : (float)tile.GetOffsetX(),
+            tile.IsFlippedY() ? (float)texture->height - (float)tile.GetHeight() - (float)tile.GetOffsetY() : (float)tile.GetOffsetY(),
+            (float)tile.GetWidth() * (tile.IsFlippedX() ? -1 : 1),
+            (float)tile.GetHeight() * (tile.IsFlippedY() ? -1 : 1)};
+
+        Rectangle dest = {
+            (float)tile.GetX() - offsetX,
+            (float)tile.GetY() - offsetY,
+            (float)tile.GetWidth(),
+            (float)tile.GetHeight()};
+
+        Vector2 origin = {0.0f, 0.0f};
+        float rotation = 0;
+        DrawTexturePro(*texture, src, dest, origin, rotation, WHITE);
+      }
     }
   }
   if (g_debug)
@@ -123,7 +153,13 @@ void Mission::RenderDebug() const
       {
         if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), tile.GetRect(offsetX, offsetY)))
         {
-          DrawText(tile.GetSpriteName().c_str(), GetMouseX() + 10, GetMouseY() + 10 + lines * 12, 10, YELLOW);
+          std::string str = tile.GetSpriteName();
+          str.append(" (")
+              .append(std::to_string(tile.GetX()))
+              .append(", ")
+              .append(std::to_string(tile.GetY()))
+              .append(")");
+          DrawText(str.c_str(), GetMouseX() + 20, GetMouseY() + 10 + lines * 12, 10, YELLOW);
           lines++;
         }
       }
@@ -154,19 +190,13 @@ void Mission::RenderDebug() const
   }
 }
 
-void Mission::LoadTiles()
+void Mission::SortPolygons()
 {
   std::vector<Polygon> &polygons = volFile->GetRoot()->GetNode("MAPTABPOLYS")->GetListOfPolygons();
-
   sortedPolygons.reserve(polygons.size());
 
   for (auto &polygon : polygons)
   {
-    for (auto &tile : polygon.GetTiles())
-    {
-      tile.Load();
-    }
-
     sortedPolygons.push_back(&polygon);
   }
 
