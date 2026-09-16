@@ -419,7 +419,7 @@ int main()
         for (int i = 0; i < wadFilePaths.size(); i++)
         {
           WadFile wadFile = WadFile(wadFilePaths.at(i));
-          wadFile.Extract();
+          wadFile.Export();
         }
       }
 

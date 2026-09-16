@@ -16,7 +16,7 @@ class WadFile
 public:
   WadFile(const std::string &path);
   ~WadFile();
-  void Extract();
+  void Export();
   std::map<std::string, Texture *> Load();
 
 private:

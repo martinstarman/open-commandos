@@ -14,7 +14,7 @@ WadFile::~WadFile()
   wadFile.close();
 }
 
-void WadFile::Extract()
+void WadFile::Export()
 {
   std::vector<char> buffer;
   int offset = blockHeaderSize; // skip header block
