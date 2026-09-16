@@ -12,14 +12,12 @@ class RleFile
 public:
   RleFile();
   ~RleFile();
-  void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
-  void Export(std::string path);
-  Texture *GetTexture();
+  Image* Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   int GetSize();
   const std::string &GetName() const;
 
 private:
-  Image image;
+  Image* image;
   std::string name;
   std::vector<unsigned char> pixels;
   int size;

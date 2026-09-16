@@ -102,7 +102,7 @@ void Mission::Load(const std::string &name, const std::string &faseToken)
   secFile->Parse();
 
   wadFile = new WadFile("DATOS/RECURSOS/BMPS/MAP/" + faseToken + ".WAD");
-  textures = wadFile->Load();
+  textures = wadFile->GetTextures();
 
   SortPolygons();
 }

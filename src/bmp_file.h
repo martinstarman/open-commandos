@@ -12,9 +12,7 @@ class BmpFile
 public:
   BmpFile();
   ~BmpFile();
-  void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
-  void Export(std::string path);
-  Texture* GetTexture();
+  Image *Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   int GetSize();
   const std::string &GetName() const;
   int blockHeaderSize = 64;
@@ -28,7 +26,7 @@ public:
   int blockPaletteIndexSize = 4;
 
 private:
-  Image image;
+  Image *image;
   std::string name;
   std::vector<unsigned char> pixels;
   int size;

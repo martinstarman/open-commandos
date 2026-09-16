@@ -16,8 +16,8 @@ class WadFile
 public:
   WadFile(const std::string &path);
   ~WadFile();
-  void Export();
-  std::map<std::string, Texture *> Load();
+  void ExportImages();
+  std::map<std::string, Texture *> GetTextures();
 
 private:
   std::string path;
@@ -28,4 +28,6 @@ private:
   int blockPalettesSize = 525;
   int blockPaletteSize = 512;
   int blockImagesCountSize = 4;
+  std::map<std::string, Image *> images;
+  void LoadImages();
 };

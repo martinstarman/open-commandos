@@ -1,13 +1,14 @@
 #include "rle_file.h"
 
 RleFile::RleFile()
-    : size(0)
+    : image(new Image({})),
+      size(0)
 {
 }
 
 RleFile::~RleFile() = default;
 
-void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
+Image *RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
 {
   int offset = 0;
 
@@ -111,31 +112,22 @@ void RleFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
     }
   }
 
-  image.data = pixels.data();
-  image.width = width;
-  image.height = height;
-  image.mipmaps = 1;
-  image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+  unsigned char *data = new unsigned char[pixels.size()];
+  std::copy(pixels.begin(), pixels.end(), data);
+
+  image->data = data;
+  image->width = width;
+  image->height = height;
+  image->mipmaps = 1;
+  image->format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 
   size = blockHeaderSize +
          pixelsCount +
          blockLineOffsetsHeaderSize +
          (height * blockLineOffsetSize) +
          blockPaletteIndexSize;
-}
 
-void RleFile::Export(std::string path)
-{
-  std::string imageName = Replace(name, "RLE", "png");
-  std::string imagePath = path.append("/").append(imageName);
-  ExportImage(image, imagePath.c_str());
-}
-
-Texture *RleFile::GetTexture()
-{
-  Texture *texture = new Texture(LoadTextureFromImage(image));
-  SetTextureWrap(*texture, TEXTURE_WRAP_REPEAT);
-  return texture;
+  return image;
 }
 
 int RleFile::GetSize()
