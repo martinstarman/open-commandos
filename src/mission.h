@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <map>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -10,6 +11,7 @@
 #include "polygon.h"
 #include "sec_file.h"
 #include "vol_file.h"
+#include "wad_file.h"
 
 class Mission
 {
@@ -29,8 +31,10 @@ private:
   MisFile *misFile;
   VolFile *volFile;
   SecFile *secFile;
+  WadFile *wadFile;
   int offsetX;
   int offsetY;
   std::vector<Polygon *> sortedPolygons;
-  void LoadTiles();
+  std::map<std::string, Texture *> textures;
+  void SortPolygons();
 };

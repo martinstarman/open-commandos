@@ -1,7 +1,8 @@
 #include "bmp_file.h"
 
 BmpFile::BmpFile()
-    : size(0),
+    : image(new Image({})),
+      size(0),
       height(0),
       width(0)
 {
@@ -9,7 +10,7 @@ BmpFile::BmpFile()
 
 BmpFile::~BmpFile() = default;
 
-void BmpFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
+Image *BmpFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes)
 {
   int offset = 0;
 
@@ -17,6 +18,7 @@ void BmpFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
       buffer.begin() + offset,
       buffer.begin() + offset + blockFileNameSize);
   name = std::string(nameBuffer.begin(), nameBuffer.end());
+  name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
 
   offset += blockFileNameSize;
 
@@ -76,22 +78,26 @@ void BmpFile::Load(std::vector<char> &buffer, std::vector<std::vector<char>> pal
     pixels.push_back(255);
   }
 
-  image.data = pixels.data();
-  image.width = width;
-  image.height = height;
-  image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+  unsigned char *data = new unsigned char[pixels.size()];
+  std::copy(pixels.begin(), pixels.end(), data);
+
+  image->data = data;
+  image->width = width;
+  image->height = height;
+  image->mipmaps = 1;
+  image->format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 
   size = blockHeaderSize + pixelsCount + blockPaletteIndexSize;
-}
 
-void BmpFile::Export(std::string path)
-{
-  std::string imageName = Replace(name, "BMP", "png");
-  std::string imagePath = path.append("/").append(imageName);
-  ExportImage(image, imagePath.c_str());
+  return image;
 }
 
 int BmpFile::GetSize()
 {
   return size;
+}
+
+const std::string &BmpFile::GetName() const
+{
+  return name;
 }

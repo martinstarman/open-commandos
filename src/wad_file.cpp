@@ -1,18 +1,28 @@
 #include "wad_file.h"
 
 WadFile::WadFile(const std::string &path)
+    : path(path),
+      wadFileDirectory(std::filesystem::path(path).parent_path().string())
 {
   TraceLog(LOG_INFO, ("FILE: Opening .wad file " + path).c_str());
   wadFile.open(path, std::ifstream::binary);
+  LoadImages();
 }
 
 WadFile::~WadFile()
 {
   TraceLog(LOG_INFO, "    > Done, closing .wad file");
+
+  for (const auto &[_, image] : images)
+  {
+    delete[] image->data;
+    delete image;
+  }
+
   wadFile.close();
 }
 
-void WadFile::Extract(const std::string &path)
+void WadFile::LoadImages()
 {
   std::vector<char> buffer;
   int offset = blockHeaderSize; // skip header block
@@ -62,8 +72,8 @@ void WadFile::Extract(const std::string &path)
       wadFile.read(&buffer[0], wadFileSize - offset);
 
       BmpFile bmpFile = BmpFile();
-      bmpFile.Load(buffer, palettes);
-      bmpFile.Export(path);
+      Image *image = bmpFile.Load(buffer, palettes);
+      images.emplace(bmpFile.GetName(), image);
 
       offset += bmpFile.GetSize();
     }
@@ -74,10 +84,37 @@ void WadFile::Extract(const std::string &path)
       wadFile.read(&buffer[0], wadFileSize - offset);
 
       RleFile rleFile = RleFile();
-      rleFile.Load(buffer, palettes);
-      rleFile.Export(path);
+      Image *image = rleFile.Load(buffer, palettes);
+      images.emplace(rleFile.GetName(), image);
 
       offset += rleFile.GetSize();
     }
   }
+}
+
+void WadFile::ExportImages()
+{
+  for (const auto &[name, image] : images)
+  {
+    std::string imageName = name;
+    imageName = Replace(imageName, "BMP", "png");
+    imageName = Replace(imageName, "RLE", "png");
+    std::string path = wadFileDirectory;
+    path.append("/").append(imageName);
+    ExportImage(*image, path.c_str());
+  }
+}
+
+std::map<std::string, Texture *> WadFile::GetTextures()
+{
+  std::map<std::string, Texture *> textures;
+
+  for (const auto &[name, image] : images)
+  {
+    Texture *texture = new Texture(LoadTextureFromImage(*image));
+    SetTextureWrap(*texture, TEXTURE_WRAP_REPEAT);
+    textures.emplace(name, texture);
+  }
+
+  return textures;
 }

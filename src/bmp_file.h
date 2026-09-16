@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -11,9 +12,9 @@ class BmpFile
 public:
   BmpFile();
   ~BmpFile();
-  void Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
-  void Export(std::string path);
+  Image *Load(std::vector<char> &buffer, std::vector<std::vector<char>> palettes);
   int GetSize();
+  const std::string &GetName() const;
   int blockHeaderSize = 64;
   int blockFileNameSize = 32;
   int blockPixelsCountSize = 8;
@@ -25,7 +26,7 @@ public:
   int blockPaletteIndexSize = 4;
 
 private:
-  Image image;
+  Image *image;
   std::string name;
   std::vector<unsigned char> pixels;
   int size;
