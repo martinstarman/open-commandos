@@ -118,8 +118,12 @@ void Mission::Render() const
         Texture *texture = textures.at(tile.GetSpriteName());
 
         Rectangle src = {
-            tile.IsFlippedX() ? (float)texture->width - (float)tile.GetWidth() - (float)tile.GetOffsetX() : (float)tile.GetOffsetX(),
-            tile.IsFlippedY() ? (float)texture->height - (float)tile.GetHeight() - (float)tile.GetOffsetY() : (float)tile.GetOffsetY(),
+            tile.IsFlippedX()
+                ? (float)texture->width - (float)tile.GetWidth() - (float)tile.GetOffsetX()
+                : (float)tile.GetOffsetX(),
+            tile.IsFlippedY()
+                ? (float)texture->height - (float)tile.GetHeight() - (float)tile.GetOffsetY()
+                : (float)tile.GetOffsetY(),
             (float)tile.GetWidth() * (tile.IsFlippedX() ? -1 : 1),
             (float)tile.GetHeight() * (tile.IsFlippedY() ? -1 : 1)};
 
