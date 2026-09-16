@@ -151,7 +151,13 @@ void Mission::RenderDebug() const
     {
       for (const auto &tile : polygon->GetTiles())
       {
-        if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), tile.GetRect(offsetX, offsetY)))
+        Rectangle rectangle = {
+            (float)tile.GetX() - offsetX,
+            (float)tile.GetY() - offsetY,
+            (float)tile.GetWidth(),
+            (float)tile.GetHeight()};
+
+        if (tile.IsVisible() && CheckCollisionPointRec(GetMousePosition(), rectangle))
         {
           std::string str = tile.GetSpriteName();
           str.append(" (")

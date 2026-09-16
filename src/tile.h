@@ -20,7 +20,6 @@ public:
       const std::string &transformation);
   ~Tile();
   const std::string &GetSpriteName() const;
-  const Rectangle GetRect(int cameraOffsetX, int cameraOffsetY) const;
   const bool IsVisible() const;
   const bool IsFlippedX() const;
   const bool IsFlippedY() const;
